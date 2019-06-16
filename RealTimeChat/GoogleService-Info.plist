@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1070147249858-g9qo3oqaebfvl6im26sshnmaa40hbtj1.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1070147249858-g9qo3oqaebfvl6im26sshnmaa40hbtj1</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDNTrDoI4rDGqAG52NNSXlColpzmBdlHBQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1070147249858</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>MSalAguila.RealTimeChat</string>
+	<key>PROJECT_ID</key>
+	<string>realtimechat-ec017</string>
+	<key>STORAGE_BUCKET</key>
+	<string>realtimechat-ec017.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1070147249858:ios:422668b167a2f9f3</string>
+	<key>DATABASE_URL</key>
+	<string>https://realtimechat-ec017.firebaseio.com</string>
+</dict>
+</plist>

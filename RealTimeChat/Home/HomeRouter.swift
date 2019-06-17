@@ -16,6 +16,7 @@ import UIKit
 {
     //func routeToSomewhere(segue: UIStoryboardSegue?)
     func routeToLogin()
+    func routeToNewMessage()
 }
 
 protocol HomeDataPassing
@@ -34,6 +35,12 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing
         let destinationVC = LoginViewController()
         navigateToLogin(source: viewController!, destination: destinationVC)
     }
+    
+    func routeToNewMessage() {
+        let destinationVC = NewMessageViewController()
+        navigateToNewMessage(source: viewController!, destination: destinationVC)
+    }
+    
     
     //func routeToSomewhere(segue: UIStoryboardSegue?)
     //{
@@ -55,6 +62,12 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing
     func navigateToLogin(source: HomeViewController, destination: LoginViewController)
     {
         source.present(destination, animated: true, completion: nil)
+    }
+    
+    func navigateToNewMessage(source: HomeViewController, destination: NewMessageViewController)
+    {
+        let navController = UINavigationController(rootViewController: destination)
+        source.present(navController, animated: true, completion: nil)
     }
     
     //     MARK: Passing data

@@ -17,6 +17,7 @@ protocol HomePresentationLogic
     func presentSomething(response: Home.Something.Response)
     func isUserLoggedIn(response: Home.IsUserLoggedIn.Response)
     func logoutUser(response: Home.LogoutUser.Response)
+    func getCurrentUser(response: Home.GetCurrentUserLoggedIn.Response)
 }
 
 class HomePresenter: HomePresentationLogic
@@ -39,5 +40,10 @@ class HomePresenter: HomePresentationLogic
     func logoutUser(response: Home.LogoutUser.Response) {
         let viewModel = Home.LogoutUser.ViewModel()
         viewController?.displayLogoutUser(viewModel: viewModel)
+    }
+    
+    func getCurrentUser(response: Home.GetCurrentUserLoggedIn.Response) {
+        let viewModel = Home.GetCurrentUserLoggedIn.ViewModel(user: response.user)
+        viewController?.displayCurrentUser(viewModel: viewModel)
     }
 }

@@ -15,6 +15,9 @@ import Firebase
 
 class HomeWorker
 {
+    
+    var repository = Repository.getInstance()
+    
     func doSomeWork()
     {
     }
@@ -35,6 +38,12 @@ class HomeWorker
             return
         } catch let error {
             print(error)
+        }
+    }
+    
+    func getCurrentUser(completion: @escaping ((UserClass) -> Void)) {
+        repository.getLoggedInUser { (user) in
+            completion(user)
         }
     }
 }

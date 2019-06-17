@@ -33,6 +33,7 @@ class LoginView: UIView {
     var emailTextField: UITextField = {
         var tf = UITextField()
         tf.placeholder = "Email"
+        tf.keyboardType = .emailAddress
         return tf
     }()
     

@@ -17,6 +17,7 @@ protocol HomeDisplayLogic: class
     func displaySomething(viewModel: Home.Something.ViewModel)
     func displayIsUserLoggedIn(viewModel: Home.IsUserLoggedIn.ViewModel)
     func displayLogoutUser(viewModel: Home.LogoutUser.ViewModel)
+    func displayCurrentUser(viewModel: Home.GetCurrentUserLoggedIn.ViewModel)
 }
 
 class HomeViewController: UIViewController, HomeDisplayLogic
@@ -74,6 +75,11 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         setUpNavBar()
         doSomething()
         view.backgroundColor = .white
+    }
+    
+    var users = [UserClass]()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         checkIfUserIsLoggedIn()
     }
     
@@ -92,23 +98,42 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         //nameTextField.text = viewModel.name
     }
     
-    @objc func logoutButtonPressed() {
-        let request = Home.LogoutUser.Request()
-        interactor?.logoutUser(request: request)
-    }
-    
     func checkIfUserIsLoggedIn() {
         let request = Home.IsUserLoggedIn.Request()
         interactor?.checkIfUserIsLoggedIn(request: request)
     }
     
+    // MARK: Events
+    
+    @objc func logoutButtonPressed() {
+        let request = Home.LogoutUser.Request()
+        interactor?.logoutUser(request: request)
+    }
+    
+    @objc func newMessageButtonPressed() {
+        router?.routeToNewMessage()
+    }
+    
+    // MARK: Events replies
     func displayIsUserLoggedIn(viewModel: Home.IsUserLoggedIn.ViewModel) {
+        // User not logged in
         if !viewModel.isLogged {
             router?.routeToLogin()
+        }
+            
+        // User logged in
+        else {
+            let request = Home.GetCurrentUserLoggedIn.Request()
+            interactor?.getCurrentUser(request: request)
         }
     }
     
     func displayLogoutUser(viewModel: Home.LogoutUser.ViewModel) {
         router?.routeToLogin()
+    }
+    
+    func displayCurrentUser(viewModel: Home.GetCurrentUserLoggedIn.ViewModel) {
+        let userName = viewModel.user.name
+        navigationItem.title = userName!
     }
 }

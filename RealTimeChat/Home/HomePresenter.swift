@@ -14,18 +14,30 @@ import UIKit
 
 protocol HomePresentationLogic
 {
-  func presentSomething(response: Home.Something.Response)
+    func presentSomething(response: Home.Something.Response)
+    func isUserLoggedIn(response: Home.IsUserLoggedIn.Response)
+    func logoutUser(response: Home.LogoutUser.Response)
 }
 
 class HomePresenter: HomePresentationLogic
 {
-  weak var viewController: HomeDisplayLogic?
-  
-  // MARK: Do something
-  
-  func presentSomething(response: Home.Something.Response)
-  {
-    let viewModel = Home.Something.ViewModel()
-    viewController?.displaySomething(viewModel: viewModel)
-  }
+    weak var viewController: HomeDisplayLogic?
+    
+    // MARK: Do something
+    
+    func presentSomething(response: Home.Something.Response)
+    {
+        let viewModel = Home.Something.ViewModel()
+        viewController?.displaySomething(viewModel: viewModel)
+    }
+    
+    func isUserLoggedIn(response: Home.IsUserLoggedIn.Response) {
+        let viewModel = Home.IsUserLoggedIn.ViewModel(isLogged: response.isLogged)
+        viewController?.displayIsUserLoggedIn(viewModel: viewModel)
+    }
+    
+    func logoutUser(response: Home.LogoutUser.Response) {
+        let viewModel = Home.LogoutUser.ViewModel()
+        viewController?.displayLogoutUser(viewModel: viewModel)
+    }
 }

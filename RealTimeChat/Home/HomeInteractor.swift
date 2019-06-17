@@ -14,28 +14,47 @@ import UIKit
 
 protocol HomeBusinessLogic
 {
-  func doSomething(request: Home.Something.Request)
+    func doSomething(request: Home.Something.Request)
+    func checkIfUserIsLoggedIn(request: Home.IsUserLoggedIn.Request)
+    func logoutUser(request: Home.LogoutUser.Request)
 }
 
 protocol HomeDataStore
 {
-  //var name: String { get set }
+    //var name: String { get set }
 }
 
 class HomeInteractor: HomeBusinessLogic, HomeDataStore
 {
-  var presenter: HomePresentationLogic?
-  var worker: HomeWorker?
-  //var name: String = ""
-  
-  // MARK: Do something
-  
-  func doSomething(request: Home.Something.Request)
-  {
-    worker = HomeWorker()
-    worker?.doSomeWork()
+    var presenter: HomePresentationLogic?
+    var worker: HomeWorker?
+    //var name: String = ""
     
-    let response = Home.Something.Response()
-    presenter?.presentSomething(response: response)
-  }
+    // MARK: Do something
+    
+    func doSomething(request: Home.Something.Request)
+    {
+        worker = HomeWorker()
+        worker?.doSomeWork()
+        
+        let response = Home.Something.Response()
+        presenter?.presentSomething(response: response)
+    }
+    
+    func checkIfUserIsLoggedIn(request: Home.IsUserLoggedIn.Request) {
+        worker = HomeWorker()
+        worker?.checkIfUserIsLoggedIn(isLogged: { isLoggedIn in
+            let response = Home.IsUserLoggedIn.Response(isLogged: isLoggedIn)
+            self.presenter?.isUserLoggedIn(response: response)
+        })
+    }
+    
+    func logoutUser(request: Home.LogoutUser.Request) {
+        worker = HomeWorker()
+        worker?.logoutUser {
+            
+            let response = Home.LogoutUser.Response()
+            self.presenter?.logoutUser(response: response)
+        }
+    }
 }

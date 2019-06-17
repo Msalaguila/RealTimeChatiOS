@@ -15,6 +15,8 @@ import UIKit
 protocol HomeDisplayLogic: class
 {
     func displaySomething(viewModel: Home.Something.ViewModel)
+    func displayIsUserLoggedIn(viewModel: Home.IsUserLoggedIn.ViewModel)
+    func displayLogoutUser(viewModel: Home.LogoutUser.ViewModel)
 }
 
 class HomeViewController: UIViewController, HomeDisplayLogic
@@ -72,6 +74,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         setUpNavBar()
         doSomething()
         view.backgroundColor = .white
+        checkIfUserIsLoggedIn()
     }
     
     // MARK: Do something
@@ -90,6 +93,22 @@ class HomeViewController: UIViewController, HomeDisplayLogic
     }
     
     @objc func logoutButtonPressed() {
+        let request = Home.LogoutUser.Request()
+        interactor?.logoutUser(request: request)
+    }
+    
+    func checkIfUserIsLoggedIn() {
+        let request = Home.IsUserLoggedIn.Request()
+        interactor?.checkIfUserIsLoggedIn(request: request)
+    }
+    
+    func displayIsUserLoggedIn(viewModel: Home.IsUserLoggedIn.ViewModel) {
+        if !viewModel.isLogged {
+            router?.routeToLogin()
+        }
+    }
+    
+    func displayLogoutUser(viewModel: Home.LogoutUser.ViewModel) {
         router?.routeToLogin()
     }
 }

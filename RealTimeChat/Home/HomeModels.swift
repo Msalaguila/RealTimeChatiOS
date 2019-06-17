@@ -14,18 +14,47 @@ import UIKit
 
 enum Home
 {
-  // MARK: Use cases
-  
-  enum Something
-  {
-    struct Request
+    // MARK: Use cases
+    
+    enum Something
     {
+        struct Request
+        {
+        }
+        struct Response
+        {
+        }
+        struct ViewModel
+        {
+        }
     }
-    struct Response
+    
+    enum IsUserLoggedIn
     {
+        struct Request
+        {
+        }
+        struct Response
+        {
+            var isLogged: Bool
+        }
+        struct ViewModel
+        {
+            var isLogged: Bool
+        }
     }
-    struct ViewModel
+    
+    enum LogoutUser
     {
+        struct Request
+        {
+        }
+        struct Response
+        {
+        }
+        struct ViewModel
+        {
+        }
     }
-  }
+
 }

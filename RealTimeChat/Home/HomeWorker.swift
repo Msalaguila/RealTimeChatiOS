@@ -11,10 +11,30 @@
 //
 
 import UIKit
+import Firebase
 
 class HomeWorker
 {
-  func doSomeWork()
-  {
-  }
+    func doSomeWork()
+    {
+    }
+    
+    func checkIfUserIsLoggedIn(isLogged completion: @escaping((Bool) -> Void)) {
+        if Auth.auth().currentUser?.uid != nil {
+            // User is logged in
+            completion(true)
+            return
+        }
+        completion(false)
+    }
+    
+    func logoutUser(completion: @escaping(() -> Void)) {
+        do {
+            try Auth.auth().signOut()
+            completion()
+            return
+        } catch let error {
+            print(error)
+        }
+    }
 }

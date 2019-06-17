@@ -16,6 +16,7 @@ protocol LoginPresentationLogic
 {
     func presentSomething(response: Login.Something.Response)
     func registerUser(response: Login.RegisterButtonPressed.Response)
+    func loginUser(response: Login.LoginButtonPressed.Response)
 }
 
 class LoginPresenter: LoginPresentationLogic
@@ -31,7 +32,12 @@ class LoginPresenter: LoginPresentationLogic
     }
     
     func registerUser(response: Login.RegisterButtonPressed.Response) {
-        let viewModel = Login.RegisterButtonPressed.ViewModel(error: response.error)
+        let viewModel = Login.RegisterButtonPressed.ViewModel(error: response.error, passwordTooShort: response.passwordTooShort)
         viewController?.userRegistered(viewModel: viewModel)
+    }
+    
+    func loginUser(response: Login.LoginButtonPressed.Response) {
+        let viewModel = Login.LoginButtonPressed.ViewModel(error: response.error, passwordTooShort: response.passwordTooShort)
+        viewController?.userLoggedIn(viewModel: viewModel)
     }
 }

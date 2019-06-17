@@ -65,6 +65,18 @@ class LoginView: UIView {
         return bt
     }()
     
+    var segmentedControl: UISegmentedControl = {
+        var sc = UISegmentedControl(items: ["Login", "Register"])
+        sc.tintColor = .white
+        sc.selectedSegmentIndex = 1
+        return sc
+    }()
+    
+    var containerHeight: NSLayoutConstraint?
+    var nameHeightAnchor: NSLayoutConstraint?
+    var emailHeightAnchor: NSLayoutConstraint?
+    var passwordHeightAnchor: NSLayoutConstraint?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUpUI()
@@ -74,19 +86,28 @@ class LoginView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUpUI() {
+    fileprivate func setUpContainer() {
         addSubviewForAutolayout(container)
+        
+        containerHeight = container.heightAnchor.constraint(equalToConstant: 150)
         
         NSLayoutConstraint.activate([
             container.centerXAnchor.constraint(equalTo: centerXAnchor),
             container.centerYAnchor.constraint(equalTo: centerYAnchor),
             container.widthAnchor.constraint(equalTo: widthAnchor, constant: -24),
-            container.heightAnchor.constraint(equalToConstant: 150)
             ])
         
+        containerHeight?.isActive = true
+    }
+    
+    fileprivate func setUpContainerElements() {
         container.addSubviewForAutolayout(nameTextField)
         
-        nameTextField.anchor(top: container.topAnchor, leading: container.leadingAnchor, bottom: nil, trailing: container.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height: 50))
+        nameTextField.anchor(top: container.topAnchor, leading: container.leadingAnchor, bottom: nil, trailing: container.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height:0))
+        
+        nameHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: container.heightAnchor, multiplier: 1/3)
+        
+        nameHeightAnchor?.isActive = true
         
         addSubviewForAutolayout(nameSeparatorLine)
         
@@ -94,7 +115,11 @@ class LoginView: UIView {
         
         container.addSubviewForAutolayout(emailTextField)
         
-        emailTextField.anchor(top: nameTextField.bottomAnchor, leading: container.leadingAnchor, bottom: nil, trailing: container.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height: 50))
+        emailTextField.anchor(top: nameTextField.bottomAnchor, leading: container.leadingAnchor, bottom: nil, trailing: container.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height: 0))
+        
+        emailHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: container.heightAnchor, multiplier: 1/3)
+        
+        emailHeightAnchor?.isActive = true
         
         addSubviewForAutolayout(emailSeparatorLine)
         
@@ -102,19 +127,46 @@ class LoginView: UIView {
         
         container.addSubviewForAutolayout(passwordTextField)
         
-        passwordTextField.anchor(top: emailTextField.bottomAnchor, leading: container.leadingAnchor, bottom: nil, trailing: container.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height: 50))
+        passwordTextField.anchor(top: emailTextField.bottomAnchor, leading: container.leadingAnchor, bottom: nil, trailing: container.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height: 0))
         
+        passwordHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: container.heightAnchor, multiplier: 1/3)
+        
+        passwordHeightAnchor?.isActive = true
+    }
+    
+    fileprivate func setUpRegisterButton() {
+        addSubviewForAutolayout(registerButton)
+        
+        registerButton.anchor(top: container.bottomAnchor, leading: container.leadingAnchor, bottom: nil, trailing: container.trailingAnchor, padding: UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0), size: CGSize(width: 0, height: 50))
+    }
+    
+    fileprivate func setUpSegmentedControl() {
+        addSubviewForAutolayout(segmentedControl)
+        
+        NSLayoutConstraint.activate([
+            segmentedControl.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            segmentedControl.bottomAnchor.constraint(equalTo: container.topAnchor, constant: -12),
+            segmentedControl.widthAnchor.constraint(equalTo: container.widthAnchor),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 36)
+            ])
+    }
+    
+    fileprivate func setUpTopImage() {
         addSubviewForAutolayout(topImage)
         
         NSLayoutConstraint.activate([
             topImage.centerXAnchor.constraint(equalTo: centerXAnchor),
-            topImage.bottomAnchor.constraint(equalTo: container.topAnchor, constant: -12),
+            topImage.bottomAnchor.constraint(equalTo: segmentedControl.topAnchor, constant: -12),
             topImage.widthAnchor.constraint(equalToConstant: 150),
             topImage.heightAnchor.constraint(equalToConstant: 150)
             ])
-        
-        addSubviewForAutolayout(registerButton)
-        
-        registerButton.anchor(top: container.bottomAnchor, leading: container.leadingAnchor, bottom: nil, trailing: container.trailingAnchor, padding: UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0), size: CGSize(width: 0, height: 50))
+    }
+    
+    func setUpUI() {
+        setUpContainer()
+        setUpContainerElements()
+        setUpRegisterButton()
+        setUpSegmentedControl()
+        setUpTopImage()
     }
 }

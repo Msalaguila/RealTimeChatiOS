@@ -16,6 +16,7 @@ protocol LoginBusinessLogic
 {
     func doSomething(request: Login.Something.Request)
     func registerUser(request: Login.RegisterButtonPressed.Request)
+    func loginUser(request: Login.LoginButtonPressed.Request)
 }
 
 protocol LoginDataStore
@@ -42,13 +43,20 @@ class LoginInteractor: LoginBusinessLogic, LoginDataStore
     
     func registerUser(request: Login.RegisterButtonPressed.Request) {
         worker = LoginWorker()
-        worker?.registerUser(request: request, error: { error in
+        worker?.registerUser(request: request, error: { error, shortPassword in
             
-            let response = Login.RegisterButtonPressed.Response(error: error)
+            let response = Login.RegisterButtonPressed.Response(error: error, passwordTooShort: shortPassword)
             self.presenter?.registerUser(response: response)
             
         })
-        
-        
+    }
+    
+    func loginUser(request: Login.LoginButtonPressed.Request) {
+        worker = LoginWorker()
+        worker?.loginUser(request: request, error: { (error, passwordShort) in
+            
+            let response = Login.LoginButtonPressed.Response(error: error, passwordTooShort: passwordShort)
+            self.presenter?.loginUser(response: response)
+        })
     }
 }

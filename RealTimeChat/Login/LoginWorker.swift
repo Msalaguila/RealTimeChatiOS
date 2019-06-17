@@ -19,12 +19,40 @@ class LoginWorker
     {
     }
     
-    func registerUser(request: Login.RegisterButtonPressed.Request, error completionHandler: @escaping((Bool) -> Void)) {
+    func loginUser(request: Login.LoginButtonPressed.Request, error completion: @escaping(_ err: Bool, _ shortPassword: Bool) -> Void) {
+        
+        // Check if password is short
+        if request.password.count < 6 {
+            completion(true, true)
+            return
+        }
+        
+        Auth.auth().signIn(withEmail: request.email, password: request.password) { (user, error) in
+            
+            if error != nil {
+                completion(true, false)
+                return
+            }
+            
+            // User Signed In Succesfully
+            completion(false, false)
+        }
+    }
+    
+    func registerUser(request: Login.RegisterButtonPressed.Request, error completionHandler: @escaping((_ err: Bool, _ shortPassword: Bool) -> Void)) {
+        
+        // Check if password is short
+        if request.password.count < 6 {
+            completionHandler(true, true)
+            return
+        }
+        
         Auth.auth().createUser(withEmail: request.email, password: request.password, completion: { (res, error) in
             
             if let error = error {
                 print(error)
-                completionHandler(true)
+                completionHandler(true, false)
+                return
             }
             
             guard let uid = res?.user.uid else {
@@ -39,12 +67,13 @@ class LoginWorker
                 
                 if let err = err {
                     print(err)
-                    completionHandler(true)
+                    completionHandler(true, false)
+                    return
                 }
                 
                 print("Saved user successfully into Firebase db")
                 
-                completionHandler(false)
+                completionHandler(false, false)
             })
             
         })

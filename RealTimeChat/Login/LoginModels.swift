@@ -40,10 +40,32 @@ enum Login
         struct Response
         {
             var error: Bool
+            var passwordTooShort: Bool
         }
         struct ViewModel
         {
             var error: Bool
+            var passwordTooShort: Bool
         }
     }
+    
+    enum LoginButtonPressed
+    {
+        struct Request
+        {
+            var email: String
+            var password: String
+        }
+        struct Response
+        {
+            var error: Bool
+            var passwordTooShort: Bool
+        }
+        struct ViewModel
+        {
+            var error: Bool
+            var passwordTooShort: Bool
+        }
+    }
+    
 }

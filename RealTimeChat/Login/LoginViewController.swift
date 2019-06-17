@@ -16,6 +16,7 @@ protocol LoginDisplayLogic: class
 {
     func displaySomething(viewModel: Login.Something.ViewModel)
     func userRegistered(viewModel: Login.RegisterButtonPressed.ViewModel)
+    func userLoggedIn(viewModel: Login.LoginButtonPressed.ViewModel)
 }
 
 class LoginViewController: UIViewController, LoginDisplayLogic
@@ -97,33 +98,7 @@ class LoginViewController: UIViewController, LoginDisplayLogic
         //nameTextField.text = viewModel.name
     }
     
-    func userRegistered(viewModel: Login.RegisterButtonPressed.ViewModel) {
-        if viewModel.error {
-            let alertController = UIAlertController(title: "Registration Failed", message: "An error has occured", preferredStyle: .alert)
-            
-            let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
-                print(123)
-            }
-            
-            alertController.addAction(defaultAction)
-            
-            present(alertController, animated: true, completion: nil)
-        }
-        
-        else {
-            let alertController = UIAlertController(title: "Registration Successful", message: "You have been registered succesfully", preferredStyle: .alert)
-            
-            let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
-                print(123)
-            }
-            
-            alertController.addAction(defaultAction)
-            
-            present(alertController, animated: true, completion: nil)
-        }
-        
-        
-    }
+    
 }
 
 // MARK: Views
@@ -132,6 +107,8 @@ extension LoginViewController {
     func setUpView() {
         view.backgroundColor = UIColor(red: 61/255, green: 91/255, blue: 151/255, alpha: 1)
         loginView.registerButton.addTarget(self, action: #selector(registerButtonPressed), for: .touchUpInside)
+        
+        loginView.segmentedControl.addTarget(self, action: #selector(segmentedControlChanged), for: .valueChanged)
     }
     
 }
@@ -145,22 +122,138 @@ extension LoginViewController {
         guard let email = loginView.emailTextField.text else { return }
         guard let password = loginView.passwordTextField.text else { return }
         
-        if password.count < 6 {
-            let alertController = UIAlertController(title: "Password too short", message: "The password needs to have at least 6 characters", preferredStyle: .alert)
-            
-            let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
-                print(123)
-            }
-            
-            alertController.addAction(defaultAction)
-            
-            present(alertController, animated: true, completion: nil)
-            return 
+        // Login Activated
+        if loginView.segmentedControl.selectedSegmentIndex == 0 {
+            let request = Login.LoginButtonPressed.Request(email: email, password: password)
+            interactor?.loginUser(request: request)
         }
-        
-        let request = Login.RegisterButtonPressed.Request(name: name, email: email, password: password)
-        interactor?.registerUser(request: request)
+            
+        // Registration Activated
+        else {
+            let request = Login.RegisterButtonPressed.Request(name: name, email: email, password: password)
+            interactor?.registerUser(request: request)
+        }
     }
     
+    @objc func segmentedControlChanged() {
+        let index = loginView.segmentedControl.selectedSegmentIndex
+        
+        if index == 0 {
+            
+            // Change containerHeight
+            loginView.containerHeight?.constant = 100
+            
+            // Change loginView height
+            loginView.nameHeightAnchor?.isActive = false
+            loginView.nameHeightAnchor = loginView.nameTextField.heightAnchor.constraint(equalTo: loginView.container.heightAnchor, multiplier: 0)
+            loginView.nameHeightAnchor?.isActive = true
+            
+            loginView.emailHeightAnchor?.isActive = false
+            loginView.emailHeightAnchor = loginView.emailTextField.heightAnchor.constraint(equalTo: loginView.container.heightAnchor, multiplier: 1/2)
+            loginView.emailHeightAnchor?.isActive = true
+            
+            loginView.passwordHeightAnchor?.isActive = false
+            loginView.passwordHeightAnchor = loginView.passwordTextField.heightAnchor.constraint(equalTo: loginView.container.heightAnchor, multiplier: 1/2)
+            loginView.passwordHeightAnchor?.isActive = true
+            
+            loginView.nameSeparatorLine.isHidden = true
+            
+            loginView.registerButton.setTitle("Login", for: .normal)
+            
+        } else {
+            
+            loginView.containerHeight?.constant = 150
+            
+            loginView.nameHeightAnchor?.isActive = false
+            loginView.nameHeightAnchor = loginView.nameTextField.heightAnchor.constraint(equalTo: loginView.container.heightAnchor, multiplier: 1/3)
+            loginView.nameHeightAnchor?.isActive = true
+            
+            loginView.emailHeightAnchor?.isActive = false
+            loginView.emailHeightAnchor = loginView.emailTextField.heightAnchor.constraint(equalTo: loginView.container.heightAnchor, multiplier: 1/3)
+            loginView.emailHeightAnchor?.isActive = true
+            
+            loginView.passwordHeightAnchor?.isActive = false
+            loginView.passwordHeightAnchor = loginView.passwordTextField.heightAnchor.constraint(equalTo: loginView.container.heightAnchor, multiplier: 1/3)
+            loginView.passwordHeightAnchor?.isActive = true
+            
+            loginView.nameSeparatorLine.isHidden = false
+            
+            loginView.registerButton.setTitle("Register", for: .normal)
+        }
+    }
+}
+
+
+// MARK: Events replies
+extension LoginViewController {
     
+    fileprivate func showPasswordTooShortAlert() {
+        let alertController = UIAlertController(title: "Password too short", message: "The password needs to have at least 6 characters", preferredStyle: .alert)
+        
+        let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
+            print(123)
+        }
+        
+        alertController.addAction(defaultAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    fileprivate func showErrorAlert() {
+        let alertController = UIAlertController(title: "Registration Failed", message: "An error has occured", preferredStyle: .alert)
+        
+        let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
+            print(123)
+        }
+        
+        alertController.addAction(defaultAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    fileprivate func showRegistrationSuccesfulAlert() {
+        let alertController = UIAlertController(title: "Registration Successful", message: "You have been registered succesfully", preferredStyle: .alert)
+        
+        let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        alertController.addAction(defaultAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func showLoginErrorAlert() {
+        let alertController = UIAlertController(title: "Check your credentials", message: "Are you sure you have an account? Check your credentials again.", preferredStyle: .alert)
+        
+        let defaultAction = UIAlertAction(title: "Dismiss", style: .default)
+        
+        alertController.addAction(defaultAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func userRegistered(viewModel: Login.RegisterButtonPressed.ViewModel) {
+        if viewModel.passwordTooShort {
+            showPasswordTooShortAlert()
+        }
+        else if viewModel.error {
+            showErrorAlert()
+        }
+        else {
+            showRegistrationSuccesfulAlert()
+        }
+    }
+    
+    func userLoggedIn(viewModel: Login.LoginButtonPressed.ViewModel) {
+        if viewModel.passwordTooShort {
+            showPasswordTooShortAlert()
+        }
+        else if viewModel.error {
+            showLoginErrorAlert()
+        }
+        else {
+            dismiss(animated: true, completion: nil)
+        }
+    }
 }

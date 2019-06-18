@@ -130,6 +130,7 @@ extension LoginViewController {
         guard let name = loginView.nameTextField.text else { return }
         guard let email = loginView.emailTextField.text else { return }
         guard let password = loginView.passwordTextField.text else { return }
+        guard let image = loginView.topImage.image else { return }
         
         // Login Activated
         if loginView.segmentedControl.selectedSegmentIndex == 0 {
@@ -139,7 +140,7 @@ extension LoginViewController {
             
         // Registration Activated
         else {
-            let request = Login.RegisterButtonPressed.Request(name: name, email: email, password: password)
+            let request = Login.RegisterButtonPressed.Request(name: name, email: email, password: password, profileImage: image)
             interactor?.registerUser(request: request)
         }
     }

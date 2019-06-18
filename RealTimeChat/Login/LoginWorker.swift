@@ -47,6 +47,12 @@ class LoginWorker
             return
         }
         
+        createUser(request, completionHandler)
+    }
+    
+    fileprivate func createUser(_ request: Login.RegisterButtonPressed.Request, _ completionHandler: @escaping ((Bool, Bool) -> Void)) {
+        
+        // 1. Create user with email and password
         Auth.auth().createUser(withEmail: request.email, password: request.password, completion: { (res, error) in
             
             if let error = error {
@@ -59,23 +65,53 @@ class LoginWorker
                 return
             }
             
-            //successfully authenticated user
-            let ref = Database.database().reference()
-            let usersReference = ref.child("users").child(uid)
-            let values = ["name": request.name, "email": request.email]
-            usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
-                
-                if let err = err {
-                    print(err)
-                    completionHandler(true, false)
-                    return
-                }
-                
-                print("Saved user successfully into Firebase db")
-                
-                completionHandler(false, false)
-            })
+            // 2. Store the user image into database
             
+            let imageName = NSUUID().uuidString
+            let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).png")
+            
+            if let uploadData = request.profileImage.pngData() {
+                
+                storageRef.putData(uploadData, metadata: nil) { (metadata, error) in
+                    
+                    if let error = error {
+                        print(error)
+                        completionHandler(true, true)
+                        return
+                    }
+                    
+                    // 3. We get the url in order to store it into the database with the other parameters
+                    storageRef.downloadURL(completion: { (url, err) in
+                        if let err = err {
+                            print(err)
+                            completionHandler(true, true)
+                            return
+                        }
+                        guard let url = url else { return }
+                        let values = ["name": request.name, "email": request.email, "profileImageUrl": url.absoluteString]
+                        
+                        // 4. Update the values into the database
+                        self.registerUserIntoDatabaseWithUID(uid, values: values as [String : AnyObject], completionHandler)
+                    })
+                }
+            }
+        })
+    }
+    
+    
+    fileprivate func registerUserIntoDatabaseWithUID(_ uid: String, values: [String: AnyObject], _ completionHandler: @escaping ((Bool, Bool) -> Void)) {
+        let ref = Database.database().reference()
+        let usersReference = ref.child("users").child(uid)
+        
+        usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
+            
+            if let err = err {
+                print(err)
+                completionHandler(true, true)
+                return
+            }
+            
+            completionHandler(false, false)
         })
     }
 }

@@ -36,6 +36,7 @@ enum Login
             var name: String
             var email: String
             var password: String
+            var profileImage: UIImage
         }
         struct Response
         {

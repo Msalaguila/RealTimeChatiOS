@@ -11,6 +11,12 @@ import LBTATools
 
 class LoginView: UIView {
     
+    var selectedImageFromPicker: UIImage? {
+        didSet {
+            topImage.image = selectedImageFromPicker
+        }
+    }
+    
     var container: UIView = {
         var container = UIView()
         container.backgroundColor = .white
@@ -54,6 +60,11 @@ class LoginView: UIView {
         var ig = UIImageView()
         ig.image = UIImage(named: "gameofthrones_splash")
         ig.contentMode = .scaleAspectFill
+        ig.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
+        ig.clipsToBounds = true
+//         profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width / 2
+        ig.layer.cornerRadius = ig.frame.size.width / 2
+        ig.isUserInteractionEnabled = true
         return ig
     }()
     

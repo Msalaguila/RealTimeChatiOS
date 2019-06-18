@@ -19,11 +19,12 @@ protocol LoginDisplayLogic: class
     func userLoggedIn(viewModel: Login.LoginButtonPressed.ViewModel)
 }
 
-class LoginViewController: UIViewController, LoginDisplayLogic
+class LoginViewController: UIViewController, LoginDisplayLogic, UIImagePickerControllerDelegate, UINavigationControllerDelegate
 {
     var interactor: LoginBusinessLogic?
     var router: (NSObjectProtocol & LoginRoutingLogic & LoginDataPassing)?
     var loginView = LoginView()
+    let imagePickerController = UIImagePickerController()
     
     // MARK: Object lifecycle
     
@@ -59,6 +60,12 @@ class LoginViewController: UIViewController, LoginDisplayLogic
         router.dataStore = interactor
     }
     
+    func setUpImagePicker() {
+        imagePickerController.delegate = self
+        loginView.topImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(topImageTapped)))
+        imagePickerController.allowsEditing  = true
+    }
+    
     // MARK: Routing
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -80,6 +87,7 @@ class LoginViewController: UIViewController, LoginDisplayLogic
     {
         super.viewDidLoad()
         setUpView()
+        setUpImagePicker()
         doSomething()
     }
     
@@ -109,6 +117,7 @@ extension LoginViewController {
         loginView.registerButton.addTarget(self, action: #selector(registerButtonPressed), for: .touchUpInside)
         
         loginView.segmentedControl.addTarget(self, action: #selector(segmentedControlChanged), for: .valueChanged)
+        
     }
     
 }
@@ -160,6 +169,7 @@ extension LoginViewController {
             
             loginView.registerButton.setTitle("Login", for: .normal)
             
+            loginView.topImage.image = UIImage(named: "gameofthrones_splash")
         } else {
             
             loginView.containerHeight?.constant = 150
@@ -179,7 +189,18 @@ extension LoginViewController {
             loginView.nameSeparatorLine.isHidden = false
             
             loginView.registerButton.setTitle("Register", for: .normal)
+            
+            if loginView.selectedImageFromPicker != nil {
+                loginView.topImage.image = loginView.selectedImageFromPicker
+            }
+            else {
+                loginView.topImage.image = UIImage(named: "gameofthrones_splash")
+            }
         }
+    }
+    
+    @objc func topImageTapped() {
+        present(imagePickerController, animated: true, completion: nil)
     }
 }
 
@@ -255,5 +276,30 @@ extension LoginViewController {
         else {
             dismiss(animated: true, completion: nil)
         }
+    }
+    
+    // MARK: Image picker methods
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        // Obtenemos la imagen editada
+        if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            // Guardamos la imagen
+            loginView.selectedImageFromPicker = editedImage
+        }
+        else {
+            // Obtenemos la imagen original
+            let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+            
+            // Guardamos la imagen
+            loginView.selectedImageFromPicker = image
+        }
+        
+        // Cerramos el picker
+        imagePickerController.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
 }

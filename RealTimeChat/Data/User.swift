@@ -11,4 +11,5 @@ import Foundation
 struct UserClass {
     var name: String?
     var email: String?
+    var imageUrl: String?
 }

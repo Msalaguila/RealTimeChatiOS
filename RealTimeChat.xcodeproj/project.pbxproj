@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		4E74D38922B83C1F005C6EDF /* NewMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E74D38822B83C1F005C6EDF /* NewMessageCell.swift */; };
+		4E8762D522C3536300F761BF /* ChatLogPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762CF22C3536300F761BF /* ChatLogPresenter.swift */; };
+		4E8762D622C3536300F761BF /* ChatLogWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762D022C3536300F761BF /* ChatLogWorker.swift */; };
+		4E8762D722C3536300F761BF /* ChatLogRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762D122C3536300F761BF /* ChatLogRouter.swift */; };
+		4E8762D822C3536300F761BF /* ChatLogModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762D222C3536300F761BF /* ChatLogModels.swift */; };
+		4E8762D922C3536300F761BF /* ChatLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762D322C3536300F761BF /* ChatLogViewController.swift */; };
+		4E8762DA22C3536300F761BF /* ChatLogInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762D422C3536300F761BF /* ChatLogInteractor.swift */; };
+		4E8762DD22C3596300F761BF /* ChatLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762DC22C3596300F761BF /* ChatLogView.swift */; };
 		4E8CB88922B806510080B149 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8CB88822B806510080B149 /* Repository.swift */; };
 		4E8CB88B22B8071C0080B149 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8CB88A22B8071C0080B149 /* User.swift */; };
 		4E8CB89422B812910080B149 /* NewMessagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8CB88E22B812910080B149 /* NewMessagePresenter.swift */; };
@@ -43,6 +50,13 @@
 
 /* Begin PBXFileReference section */
 		4E74D38822B83C1F005C6EDF /* NewMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageCell.swift; sourceTree = "<group>"; };
+		4E8762CF22C3536300F761BF /* ChatLogPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogPresenter.swift; sourceTree = "<group>"; };
+		4E8762D022C3536300F761BF /* ChatLogWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogWorker.swift; sourceTree = "<group>"; };
+		4E8762D122C3536300F761BF /* ChatLogRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogRouter.swift; sourceTree = "<group>"; };
+		4E8762D222C3536300F761BF /* ChatLogModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogModels.swift; sourceTree = "<group>"; };
+		4E8762D322C3536300F761BF /* ChatLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogViewController.swift; sourceTree = "<group>"; };
+		4E8762D422C3536300F761BF /* ChatLogInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogInteractor.swift; sourceTree = "<group>"; };
+		4E8762DC22C3596300F761BF /* ChatLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogView.swift; sourceTree = "<group>"; };
 		4E8CB88822B806510080B149 /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		4E8CB88A22B8071C0080B149 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		4E8CB88E22B812910080B149 /* NewMessagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessagePresenter.swift; sourceTree = "<group>"; };
@@ -92,6 +106,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4E8762CE22C3534700F761BF /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				4E8762DB22C3595400F761BF /* Views */,
+				4E8762CF22C3536300F761BF /* ChatLogPresenter.swift */,
+				4E8762D022C3536300F761BF /* ChatLogWorker.swift */,
+				4E8762D122C3536300F761BF /* ChatLogRouter.swift */,
+				4E8762D222C3536300F761BF /* ChatLogModels.swift */,
+				4E8762D322C3536300F761BF /* ChatLogViewController.swift */,
+				4E8762D422C3536300F761BF /* ChatLogInteractor.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
+		4E8762DB22C3595400F761BF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4E8762DC22C3596300F761BF /* ChatLogView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		4E8CB88722B806340080B149 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -145,6 +181,7 @@
 		4EE2A1FB22B6455C008AE412 /* RealTimeChat */ = {
 			isa = PBXGroup;
 			children = (
+				4E8762CE22C3534700F761BF /* Chat */,
 				4E8CB88C22B812770080B149 /* NewMessage */,
 				4E8CB88722B806340080B149 /* Data */,
 				4EE2A21222B645E7008AE412 /* Home */,
@@ -349,8 +386,10 @@
 				4EE2A21E22B646A3008AE412 /* LoginPresenter.swift in Sources */,
 				4EE2A22D22B646B6008AE412 /* HomeModels.swift in Sources */,
 				4EE2A22322B646A3008AE412 /* LoginInteractor.swift in Sources */,
+				4E8762D522C3536300F761BF /* ChatLogPresenter.swift in Sources */,
 				4EE2A20122B6455C008AE412 /* ViewController.swift in Sources */,
 				4EE2A22A22B646B6008AE412 /* HomePresenter.swift in Sources */,
+				4E8762D822C3536300F761BF /* ChatLogModels.swift in Sources */,
 				4EE2A21F22B646A3008AE412 /* LoginWorker.swift in Sources */,
 				4EE2A1FD22B6455C008AE412 /* AppDelegate.swift in Sources */,
 				4E8CB89822B812910080B149 /* NewMessageViewController.swift in Sources */,
@@ -361,11 +400,15 @@
 				4EE2A21722B6462F008AE412 /* LoginView.swift in Sources */,
 				4EE2A23222B64715008AE412 /* HomeView.swift in Sources */,
 				4EE2A22122B646A3008AE412 /* LoginModels.swift in Sources */,
+				4E8762D622C3536300F761BF /* ChatLogWorker.swift in Sources */,
 				4EE2A22C22B646B6008AE412 /* HomeRouter.swift in Sources */,
 				4EE2A22E22B646B6008AE412 /* HomeViewController.swift in Sources */,
 				4E8CB89522B812910080B149 /* NewMessageWorker.swift in Sources */,
 				4E8CB89922B812910080B149 /* NewMessageInteractor.swift in Sources */,
 				4EE2A22B22B646B6008AE412 /* HomeWorker.swift in Sources */,
+				4E8762D922C3536300F761BF /* ChatLogViewController.swift in Sources */,
+				4E8762DA22C3536300F761BF /* ChatLogInteractor.swift in Sources */,
+				4E8762DD22C3596300F761BF /* ChatLogView.swift in Sources */,
 				4E8CB89B22B813AF0080B149 /* NewMessageView.swift in Sources */,
 				4EE2A22022B646A3008AE412 /* LoginRouter.swift in Sources */,
 				4E8CB89722B812910080B149 /* NewMessageModels.swift in Sources */,
@@ -373,6 +416,7 @@
 				4EE2A22F22B646B6008AE412 /* HomeInteractor.swift in Sources */,
 				4E8CB88922B806510080B149 /* Repository.swift in Sources */,
 				4E8CB88B22B8071C0080B149 /* User.swift in Sources */,
+				4E8762D722C3536300F761BF /* ChatLogRouter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -34,15 +34,14 @@ class Repository {
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 guard let name = dictionary["name"] as? String else { return }
                 guard let email = dictionary["email"] as? String else { return }
+                guard let imageURL = dictionary["profileImageUrl"] as? String else { return }
                 
-                let user = UserClass(name: name, email: email)
+                let user = UserClass(name: name, email: email, imageUrl: imageURL)
                 completion(user)
             }
             
         }, withCancel: nil)
     }
-    
-    // TODO: Revise this method and finish it
     
     func getUsers(completion: @escaping (([UserClass]) -> Void)) {
         
@@ -55,8 +54,9 @@ class Repository {
                 
                 guard let name = dictionary["name"] as? String else { return }
                 guard let email = dictionary["email"] as? String else { return }
+                guard let imageURL = dictionary["profileImageUrl"] as? String else { return }
                 
-                let user = UserClass(name: name, email: email)
+                let user = UserClass(name: name, email: email, imageUrl: imageURL)
                 self.currentUsers.append(user)
             
                 completion(self.currentUsers)

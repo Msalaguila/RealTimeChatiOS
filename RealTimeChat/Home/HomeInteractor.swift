@@ -23,10 +23,13 @@ protocol HomeBusinessLogic
 protocol HomeDataStore
 {
     //var name: String { get set }
+    var currentUser: UserClass? { get set }
 }
 
 class HomeInteractor: HomeBusinessLogic, HomeDataStore
 {
+    var currentUser: UserClass?
+    
     var presenter: HomePresentationLogic?
     var worker: HomeWorker?
     //var name: String = ""
@@ -63,6 +66,7 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore
         worker = HomeWorker()
         worker?.getCurrentUser(completion: { (user) in
             let response = Home.GetCurrentUserLoggedIn.Response(user: user)
+            self.currentUser = response.user
             self.presenter?.getCurrentUser(response: response)
         })
     }

@@ -80,6 +80,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic
     var users = [UserClass]()
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         checkIfUserIsLoggedIn()
     }
     
@@ -105,6 +106,10 @@ class HomeViewController: UIViewController, HomeDisplayLogic
     
     // MARK: Events
     
+    @objc func navBarPressed() {
+        router?.routeToChatLog()
+    }
+    
     @objc func logoutButtonPressed() {
         let request = Home.LogoutUser.Request()
         interactor?.logoutUser(request: request)
@@ -120,8 +125,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         if !viewModel.isLogged {
             router?.routeToLogin()
         }
-            
-        // User logged in
+            // User logged in
         else {
             let request = Home.GetCurrentUserLoggedIn.Request()
             interactor?.getCurrentUser(request: request)
@@ -132,8 +136,28 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         router?.routeToLogin()
     }
     
+    // Here we customize the nav bar
     func displayCurrentUser(viewModel: Home.GetCurrentUserLoggedIn.ViewModel) {
-        let userName = viewModel.user.name
-        navigationItem.title = userName!
+        if let username = viewModel.user.name {
+            if let imageUrl = viewModel.user.imageUrl {
+                profileImageView.loadImageUsingUrlString(urlString: imageUrl)
+            }
+            profileName.text = username
+        } else {
+            navigationItem.title = "Username not available"
+        }
     }
+    
+    // MARK: NavBar View
+    
+    let profileImageView: CustomImageView = {
+        var image = CustomImageView()
+        image.layer.cornerRadius = 17.5
+        return image
+    }()
+    
+    let profileName: UILabel = {
+        var label = UILabel()
+        return label
+    }()
 }

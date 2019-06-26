@@ -62,7 +62,6 @@ class LoginView: UIView {
         ig.contentMode = .scaleAspectFill
         ig.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
         ig.clipsToBounds = true
-//         profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width / 2
         ig.layer.cornerRadius = ig.frame.size.width / 2
         ig.isUserInteractionEnabled = true
         return ig

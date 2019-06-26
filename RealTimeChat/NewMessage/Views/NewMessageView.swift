@@ -39,7 +39,6 @@ class NewMessageView: UIView, UITableViewDelegate, UITableViewDataSource {
         addSubviewForAutolayout(tableView)
         
         tableView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: .zero)
-//        tableView.backgroundColor = .red
         
         tableView.register(NewMessageCell.self, forCellReuseIdentifier: cellID)
     }
@@ -55,7 +54,7 @@ class NewMessageView: UIView, UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return 100
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

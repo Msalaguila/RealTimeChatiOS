@@ -17,6 +17,7 @@ import UIKit
     //func routeToSomewhere(segue: UIStoryboardSegue?)
     func routeToLogin()
     func routeToNewMessage()
+    func routeToChatLog()
 }
 
 protocol HomeDataPassing
@@ -30,6 +31,13 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing
     var dataStore: HomeDataStore?
     
     // MARK: Routing
+    
+    func routeToChatLog() {
+        let destinationVC = ChatLogViewController()
+        var destinationDS = destinationVC.router!.dataStore!
+        passDataToChatLogController(source: dataStore!, destination: &destinationDS)
+        navigateToChatLog(source: viewController!, destination: destinationVC)
+    }
     
     func routeToLogin() {
         let destinationVC = LoginViewController()
@@ -70,10 +78,22 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing
         source.present(navController, animated: true, completion: nil)
     }
     
+    func navigateToChatLog(source: HomeViewController, destination: ChatLogViewController)
+    {
+        source.show(destination, sender: nil)
+    }
+    
     //     MARK: Passing data
     
     func passDataToSomewhere(source: HomeDataStore, destination: inout LoginDataStore)
     {
         
     }
+    
+    func passDataToChatLogController(source: HomeDataStore, destination: inout ChatLogDataStore)
+    {
+        destination.currentUser = source.currentUser
+    }
+    
+    
 }

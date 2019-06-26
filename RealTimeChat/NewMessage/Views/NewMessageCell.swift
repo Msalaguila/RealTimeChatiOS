@@ -15,8 +15,20 @@ class NewMessageCell: UITableViewCell {
         didSet {
             nameTextView.text = user?.name
             emailTextView.text = user?.email
+            if let imageUrl = user?.imageUrl {
+                profileImage.loadImageUsingUrlString(urlString: imageUrl)
+            }
         }
     }
+    
+    private let profileImage: CustomImageView = {
+        let im = CustomImageView()
+        im.contentMode = .scaleAspectFill
+        im.frame = CGRect(x: 0, y: 0, width: 75, height: 75)
+        im.clipsToBounds = true
+        im.layer.cornerRadius = im.layer.frame.width / 2
+        return im
+    }()
     
     private let nameTextView: UITextView = {
         var tv = UITextView()
@@ -45,9 +57,18 @@ class NewMessageCell: UITableViewCell {
     
     
     func setUpViews() {
+        contentView.addSubviewForAutolayout(profileImage)
+        
+        NSLayoutConstraint.activate([
+            profileImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            profileImage.widthAnchor.constraint(equalToConstant: 75),
+            profileImage.heightAnchor.constraint(equalToConstant: 75),
+            profileImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12)
+            ])
+        
         contentView.addSubviewForAutolayout(nameTextView)
         
-        nameTextView.anchor(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: nil, trailing: contentView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height: 25))
+        nameTextView.anchor(top: profileImage.topAnchor, leading: profileImage.trailingAnchor, bottom: nil, trailing: contentView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height: 30))
         
         contentView.addSubviewForAutolayout(emailTextView)
         

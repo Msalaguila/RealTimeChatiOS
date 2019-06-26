@@ -70,7 +70,7 @@ class LoginWorker
             let imageName = NSUUID().uuidString
             let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).png")
             
-            if let uploadData = request.profileImage.pngData() {
+            if let uploadData = request.profileImage.jpegData(compressionQuality: 0.1) {
                 
                 storageRef.putData(uploadData, metadata: nil) { (metadata, error) in
                     

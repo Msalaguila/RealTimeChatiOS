@@ -151,7 +151,9 @@ extension LoginViewController {
         if index == 0 {
             
             // Change containerHeight
+            loginView.containerHeight?.isActive = false
             loginView.containerHeight?.constant = 100
+            loginView.containerHeight?.isActive = true
             
             // Change loginView height
             loginView.nameHeightAnchor?.isActive = false

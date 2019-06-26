@@ -14,7 +14,16 @@ import UIKit
 
 class ChatLogWorker
 {
-  func doSomeWork()
-  {
-  }
+    
+    var repository = Repository.getInstance()
+    
+    func doSomeWork()
+    {
+    }
+    
+    func sendMessage(request: ChatLog.SendMessage.Request, completion: @escaping() -> Void) {
+        repository.sendMessage(message: request.message) {
+            completion()
+        }
+    }
 }

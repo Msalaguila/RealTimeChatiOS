@@ -14,18 +14,32 @@ import UIKit
 
 enum ChatLog
 {
-  // MARK: Use cases
-  
-  enum Something
-  {
-    struct Request
+    // MARK: Use cases
+    
+    enum Something
     {
+        struct Request
+        {
+        }
+        struct Response
+        {
+        }
+        struct ViewModel
+        {
+        }
     }
-    struct Response
+    
+    enum SendMessage
     {
+        struct Request
+        {
+            var message: String
+        }
+        struct Response
+        {
+        }
+        struct ViewModel
+        {
+        }
     }
-    struct ViewModel
-    {
-    }
-  }
 }

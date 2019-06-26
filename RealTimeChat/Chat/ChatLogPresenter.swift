@@ -14,18 +14,24 @@ import UIKit
 
 protocol ChatLogPresentationLogic
 {
-  func presentSomething(response: ChatLog.Something.Response)
+    func presentSomething(response: ChatLog.Something.Response)
+    func messageSent(response: ChatLog.SendMessage.Response)
 }
 
 class ChatLogPresenter: ChatLogPresentationLogic
 {
-  weak var viewController: ChatLogDisplayLogic?
-  
-  // MARK: Do something
-  
-  func presentSomething(response: ChatLog.Something.Response)
-  {
-    let viewModel = ChatLog.Something.ViewModel()
-    viewController?.displaySomething(viewModel: viewModel)
-  }
+    weak var viewController: ChatLogDisplayLogic?
+    
+    // MARK: Do something
+    
+    func presentSomething(response: ChatLog.Something.Response)
+    {
+        let viewModel = ChatLog.Something.ViewModel()
+        viewController?.displaySomething(viewModel: viewModel)
+    }
+    
+    func messageSent(response: ChatLog.SendMessage.Response) {
+        let viewModel = ChatLog.SendMessage.ViewModel()
+        viewController?.messageSent(viewModel: viewModel)
+    }
 }

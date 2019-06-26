@@ -27,7 +27,6 @@ class Repository {
     
     func getLoggedInUser(completion: @escaping ((UserClass) -> Void)) {
         
-        print("Llamada a repositorio")
         guard let uid = Auth.auth().currentUser?.uid else { return }
         Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
             
@@ -62,5 +61,14 @@ class Repository {
                 completion(self.currentUsers)
             }
         }, withCancel: nil)
+    }
+    
+    func sendMessage(message: String, completion: @escaping () -> Void) {
+        
+        let reference = Database.database().reference().child("messages")
+        let messageIDReference = reference.childByAutoId()
+        let values = ["text": message]
+        messageIDReference.updateChildValues(values)
+        completion()
     }
 }

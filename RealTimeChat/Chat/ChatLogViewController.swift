@@ -15,12 +15,14 @@ import UIKit
 protocol ChatLogDisplayLogic: class
 {
     func displaySomething(viewModel: ChatLog.Something.ViewModel)
+    func messageSent(viewModel: ChatLog.SendMessage.ViewModel)
 }
 
 class ChatLogViewController: UIViewController, ChatLogDisplayLogic
 {
     var interactor: ChatLogBusinessLogic?
     var router: (NSObjectProtocol & ChatLogRoutingLogic & ChatLogDataPassing)?
+    var mainView = ChatLogView()
     
     // MARK: Object lifecycle
     
@@ -66,9 +68,16 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic
     
     // MARK: View lifecycle
     
+    override func loadView() {
+        super.loadView()
+        
+        view = mainView
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        setUpHandlers()
         doSomething()
         view.backgroundColor = .white
     }
@@ -87,4 +96,38 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic
     {
         //nameTextField.text = viewModel.name
     }
+    
+    // MARK: Events
+    
+    // TODO: Check that the message is not empty
+    @objc func sendButtonPressed() {
+        if let message = mainView.inputTextField.text {
+            if !message.isEmpty {
+                let request = ChatLog.SendMessage.Request(message: message)
+                interactor?.sendMessage(request: request)
+            }
+        }
+    }
+    
+    // MARK: Events replies
+    
+    func messageSent(viewModel: ChatLog.SendMessage.ViewModel) { 
+        mainView.inputTextField.text = ""
+    }
+    
+    
+    // MARK: Handlers
+    
+    func setUpHandlers() {
+        mainView.sendButton.addTarget(self, action: #selector(sendButtonPressed), for: .touchUpInside)
+        mainView.inputTextField.delegate = self
+    }
+}
+
+extension ChatLogViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        sendButtonPressed()
+        return true
+    }
+    
 }

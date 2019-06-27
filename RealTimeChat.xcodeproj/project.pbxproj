@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E28415822C540ED0022195B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E28415722C540ED0022195B /* Message.swift */; };
 		4E74D38922B83C1F005C6EDF /* NewMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E74D38822B83C1F005C6EDF /* NewMessageCell.swift */; };
+		4E7B81E622C559FF001AF615 /* HomeViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E7B81E522C559FF001AF615 /* HomeViewCell.swift */; };
 		4E8762D522C3536300F761BF /* ChatLogPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762CF22C3536300F761BF /* ChatLogPresenter.swift */; };
 		4E8762D622C3536300F761BF /* ChatLogWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762D022C3536300F761BF /* ChatLogWorker.swift */; };
 		4E8762D722C3536300F761BF /* ChatLogRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8762D122C3536300F761BF /* ChatLogRouter.swift */; };
@@ -49,7 +51,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4E28415722C540ED0022195B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		4E74D38822B83C1F005C6EDF /* NewMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageCell.swift; sourceTree = "<group>"; };
+		4E7B81E522C559FF001AF615 /* HomeViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewCell.swift; sourceTree = "<group>"; };
 		4E8762CF22C3536300F761BF /* ChatLogPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogPresenter.swift; sourceTree = "<group>"; };
 		4E8762D022C3536300F761BF /* ChatLogWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogWorker.swift; sourceTree = "<group>"; };
 		4E8762D122C3536300F761BF /* ChatLogRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogRouter.swift; sourceTree = "<group>"; };
@@ -133,6 +137,7 @@
 			children = (
 				4E8CB88822B806510080B149 /* Repository.swift */,
 				4E8CB88A22B8071C0080B149 /* User.swift */,
+				4E28415722C540ED0022195B /* Message.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -246,6 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				4EE2A23122B64715008AE412 /* HomeView.swift */,
+				4E7B81E522C559FF001AF615 /* HomeViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -400,6 +406,7 @@
 				4EE2A21722B6462F008AE412 /* LoginView.swift in Sources */,
 				4EE2A23222B64715008AE412 /* HomeView.swift in Sources */,
 				4EE2A22122B646A3008AE412 /* LoginModels.swift in Sources */,
+				4E7B81E622C559FF001AF615 /* HomeViewCell.swift in Sources */,
 				4E8762D622C3536300F761BF /* ChatLogWorker.swift in Sources */,
 				4EE2A22C22B646B6008AE412 /* HomeRouter.swift in Sources */,
 				4EE2A22E22B646B6008AE412 /* HomeViewController.swift in Sources */,
@@ -410,6 +417,7 @@
 				4E8762DA22C3536300F761BF /* ChatLogInteractor.swift in Sources */,
 				4E8762DD22C3596300F761BF /* ChatLogView.swift in Sources */,
 				4E8CB89B22B813AF0080B149 /* NewMessageView.swift in Sources */,
+				4E28415822C540ED0022195B /* Message.swift in Sources */,
 				4EE2A22022B646A3008AE412 /* LoginRouter.swift in Sources */,
 				4E8CB89722B812910080B149 /* NewMessageModels.swift in Sources */,
 				4EE2A22222B646A3008AE412 /* LoginViewController.swift in Sources */,

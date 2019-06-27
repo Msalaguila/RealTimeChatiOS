@@ -16,14 +16,20 @@ protocol NewMessageDisplayLogic: class
 {
     func displaySomething(viewModel: NewMessage.Something.ViewModel)
     func displayLoadedUsers(viewModel: NewMessage.LoadAvailableUsers.ViewModel)
+    func userHasBeenSavedAfterTapping(viewModel: NewMessage.TappedOnUser.ViewModel)
 }
 
-class NewMessageViewController: UIViewController, NewMessageDisplayLogic
+class NewMessageViewController: UIViewController, NewMessageDisplayLogic, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource
 {
+    
+    
     var interactor: NewMessageBusinessLogic?
     var router: (NSObjectProtocol & NewMessageRoutingLogic & NewMessageDataPassing)?
 
     var mainView = NewMessageView()
+    var usersLoaded = [UserClass]()
+    var cellID = "cellID"
+
     
     // MARK: Object lifecycle
     
@@ -61,6 +67,11 @@ class NewMessageViewController: UIViewController, NewMessageDisplayLogic
         navigationItem.title = "New Message"
     }
     
+    func setUpTableView() {
+        mainView.collectionView.delegate = self
+        mainView.collectionView.dataSource = self
+    }
+    
     // MARK: Routing
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -80,6 +91,7 @@ class NewMessageViewController: UIViewController, NewMessageDisplayLogic
         super.viewDidLoad()
         view = mainView
         setUpNavBar()
+        setUpTableView()
         doSomething()
         loadAvailableUsers()
     }
@@ -113,8 +125,42 @@ class NewMessageViewController: UIViewController, NewMessageDisplayLogic
     
     func displayLoadedUsers(viewModel: NewMessage.LoadAvailableUsers.ViewModel) {
         let users = viewModel.users
-        mainView.usersLoaded = users
-        mainView.tableView.reloadData()
+        usersLoaded = users
+        mainView.collectionView.reloadData()
     }
     
+    func userHasBeenSavedAfterTapping(viewModel: NewMessage.TappedOnUser.ViewModel) {
+        router?.routeToChatController()
+    }
+ 
+    
+    // MARK: Collection View Methods
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return usersLoaded.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as? NewMessageCell {
+            let user = usersLoaded[indexPath.item]
+            cell.user = user
+            return cell
+        } else {
+            return UICollectionViewCell()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 100)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let tappedUser = usersLoaded[indexPath.item]
+        let request = NewMessage.TappedOnUser.Request(userTapped: tappedUser)
+        interactor?.userTapped(request: request)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
 }

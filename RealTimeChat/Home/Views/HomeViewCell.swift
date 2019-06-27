@@ -1,25 +1,15 @@
 //
-//  NewMessageCell.swift
+//  HomeViewCell.swift
 //  RealTimeChat
 //
-//  Created by Manuel Salvador del Águila on 17/06/2019.
+//  Created by Manuel Salvador del Águila on 27/06/2019.
 //  Copyright © 2019 Manuel Salvador del Águila. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import LBTATools
 
-class NewMessageCell: UICollectionViewCell {
-    
-    var user: UserClass? {
-        didSet {
-            nameLabel.text = user?.name
-            emailLabel.text = user?.email
-            if let imageUrl = user?.imageUrl {
-                profileImage.loadImageUsingUrlString(urlString: imageUrl)
-            }
-        }
-    }
+class HomeViewCell: UICollectionViewCell {
     
     private let profileImage: CustomImageView = {
         let im = CustomImageView()
@@ -30,7 +20,7 @@ class NewMessageCell: UICollectionViewCell {
         return im
     }()
     
-    private let nameLabel: UILabel = {
+    let nameLabel: UILabel = {
         var tv = UILabel()
         tv.font = UIFont.systemFont(ofSize: 16)
         tv.isUserInteractionEnabled = true
@@ -83,5 +73,7 @@ class NewMessageCell: UICollectionViewCell {
         
         separatorLine.anchor(top: nil, leading: profileImage.leadingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: CGSize(width: 0, height: 0.5))
     }
+    
+    
     
 }

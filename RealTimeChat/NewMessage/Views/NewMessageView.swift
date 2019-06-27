@@ -9,23 +9,20 @@
 import Foundation
 import LBTATools
 
-class NewMessageView: UIView, UITableViewDelegate, UITableViewDataSource {
-    
-    var usersLoaded = [UserClass]()
+class NewMessageView: UIView {
     
     var cellID = "cellID"
     
-    var tableView: UITableView = {
-        var tb = UITableView()
-        return tb
+    var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        var cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = .white
+        return cv
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
-        
-        tableView.dataSource = self
-        tableView.delegate = self
         
         setUpViews()
     }
@@ -36,38 +33,14 @@ class NewMessageView: UIView, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: Set up views
     fileprivate func setUpTableView() {
-        addSubviewForAutolayout(tableView)
+        addSubviewForAutolayout(collectionView)
         
-        tableView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: .zero)
+        collectionView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: .zero)
         
-        tableView.register(NewMessageCell.self, forCellReuseIdentifier: cellID)
+        collectionView.register(NewMessageCell.self, forCellWithReuseIdentifier: cellID)
     }
     
     func setUpViews() {
         setUpTableView()
     }
-    
-    
-    // MARK: TableView Methods
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return usersLoaded.count
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? NewMessageCell {
-            let user = usersLoaded[indexPath.item]
-            cell.user = user
-            return cell
-        } else {
-            return UITableViewCell()
-        }
-    }
-    
-    
-    
-    
 }

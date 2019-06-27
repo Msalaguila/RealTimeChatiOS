@@ -43,4 +43,20 @@ enum NewMessage
             var users: [UserClass]
         }
     }
+    
+    enum TappedOnUser
+    {
+        struct Request
+        {
+            var userTapped: UserClass
+        }
+        struct Response
+        {
+            
+        }
+        struct ViewModel
+        {
+            
+        }
+    }
 }

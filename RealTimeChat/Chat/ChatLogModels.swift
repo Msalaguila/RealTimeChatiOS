@@ -34,12 +34,28 @@ enum ChatLog
         struct Request
         {
             var message: String
+            var userToSendMessage: UserClass?
         }
         struct Response
         {
         }
         struct ViewModel
         {
+        }
+    }
+    
+    enum GetTappedUser
+    {
+        struct Request
+        {
+        }
+        struct Response
+        {
+            var user: UserClass
+        }
+        struct ViewModel
+        {
+            var user: UserClass
         }
     }
 }

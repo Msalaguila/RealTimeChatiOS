@@ -22,7 +22,7 @@ class ChatLogWorker
     }
     
     func sendMessage(request: ChatLog.SendMessage.Request, completion: @escaping() -> Void) {
-        repository.sendMessage(message: request.message) {
+        repository.sendMessage(message: request.message, toUser: request.userToSendMessage!) {
             completion()
         }
     }

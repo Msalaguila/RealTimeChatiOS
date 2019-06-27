@@ -16,6 +16,7 @@ protocol ChatLogBusinessLogic
 {
     func doSomething(request: ChatLog.Something.Request)
     func sendMessage(request: ChatLog.SendMessage.Request)
+    func getTappedUser(request: ChatLog.GetTappedUser.Request)
 }
 
 protocol ChatLogDataStore
@@ -45,9 +46,15 @@ class ChatLogInteractor: ChatLogBusinessLogic, ChatLogDataStore
     
     func sendMessage(request: ChatLog.SendMessage.Request) {
         worker = ChatLogWorker()
-        worker?.sendMessage(request: request, completion: {
+        let newRequest = ChatLog.SendMessage.Request(message: request.message, userToSendMessage: currentUser!)
+        worker?.sendMessage(request: newRequest, completion: {
             let response = ChatLog.SendMessage.Response()
             self.presenter?.messageSent(response: response)
         })
+    }
+    
+    func getTappedUser(request: ChatLog.GetTappedUser.Request) {
+        let response = ChatLog.GetTappedUser.Response(user: currentUser!)
+        presenter?.getTappedUser(response: response)
     }
 }

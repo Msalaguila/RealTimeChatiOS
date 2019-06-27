@@ -71,5 +71,20 @@ enum Home
             var user: UserClass
         }
     }
+    
+    enum LoadMessages
+    {
+        struct Request
+        {
+        }
+        struct Response
+        {
+            var messages: [Message]
+        }
+        struct ViewModel
+        {
+            var messages: [Message]
+        }
+    }
 
 }

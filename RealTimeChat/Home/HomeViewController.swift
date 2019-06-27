@@ -11,6 +11,7 @@
 //
 
 import UIKit
+import LBTATools
 
 protocol HomeDisplayLogic: class
 {
@@ -18,12 +19,18 @@ protocol HomeDisplayLogic: class
     func displayIsUserLoggedIn(viewModel: Home.IsUserLoggedIn.ViewModel)
     func displayLogoutUser(viewModel: Home.LogoutUser.ViewModel)
     func displayCurrentUser(viewModel: Home.GetCurrentUserLoggedIn.ViewModel)
+    func displayMessages(viewModel: Home.LoadMessages.ViewModel)
 }
 
-class HomeViewController: UIViewController, HomeDisplayLogic
+class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 {
+    
+    
     var interactor: HomeBusinessLogic?
     var router: (NSObjectProtocol & HomeRoutingLogic & HomeDataPassing)?
+    var mainView = HomeView()
+    var cellID = "cellID"
+    var messages = [Message]()
     
     // MARK: Object lifecycle
     
@@ -55,26 +62,20 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         router.dataStore = interactor
     }
     
-    // MARK: Routing
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        if let scene = segue.identifier {
-            let selector = NSSelectorFromString("routeTo\(scene)WithSegue:")
-            if let router = router, router.responds(to: selector) {
-                router.perform(selector, with: segue)
-            }
-        }
-    }
-    
     // MARK: View lifecycle
+    
+    override func loadView() {
+        view = mainView
+    }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         setUpNavBar()
+        setUpTableView()
         doSomething()
-        view.backgroundColor = .white
+        loadMessages()
+        
     }
     
     var users = [UserClass]()
@@ -119,6 +120,11 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         router?.routeToNewMessage()
     }
     
+    func loadMessages() {
+        let request = Home.LoadMessages.Request()
+        interactor?.loadMessages(request: request)
+    }
+    
     // MARK: Events replies
     func displayIsUserLoggedIn(viewModel: Home.IsUserLoggedIn.ViewModel) {
         // User not logged in
@@ -148,6 +154,40 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         }
     }
     
+    func displayMessages(viewModel: Home.LoadMessages.ViewModel) {
+        DispatchQueue.main.async {
+            self.messages = viewModel.messages
+            self.mainView.tableView.reloadData()
+        }
+    }
+    
+    // MARK: Table View Methods
+    
+    func setUpTableView() {
+        mainView.tableView.delegate = self
+        mainView.tableView.dataSource = self
+        
+        mainView.tableView.register(HomeViewCell.self, forCellWithReuseIdentifier: cellID)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if let cell = mainView.tableView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as? HomeViewCell {
+            let message = messages[indexPath.item]
+            cell.nameLabel.text = message.message
+            return cell
+        } else {
+            return UICollectionViewCell()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 100)
+    }
+    
     // MARK: NavBar View
     
     let profileImageView: CustomImageView = {
@@ -160,4 +200,38 @@ class HomeViewController: UIViewController, HomeDisplayLogic
         var label = UILabel()
         return label
     }()
+}
+
+extension HomeViewController {
+    
+    func setUpNavBar() {
+        view.backgroundColor = .white
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logoutButtonPressed))
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "new_message_icon"), style: .plain, target: self, action: #selector(newMessageButtonPressed))
+        navigationController?.navigationBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(navBarPressed)))
+        
+        let customView = UIView()
+        customView.backgroundColor = .blue
+        customView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+        
+        let containerView = UIView()
+        customView.addSubviewForAutolayout(containerView)
+        
+        profileImageView.contentMode = .scaleAspectFill
+        containerView.addSubviewForAutolayout(profileImageView)
+        profileImageView.anchor(top: nil, leading: containerView.leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: CGSize(width: 35, height: 35))
+        profileImageView.centerYAnchor.constraint(equalTo: customView.centerYAnchor).isActive = true
+        
+        containerView.addSubviewForAutolayout(profileName)
+        profileName.anchor(top: containerView.topAnchor, leading: profileImageView.trailingAnchor, bottom: containerView.bottomAnchor, trailing: containerView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 0), size: CGSize(width: 0, height: 0))
+        
+        NSLayoutConstraint.activate([
+            containerView.centerXAnchor.constraint(equalTo: customView.centerXAnchor),
+            containerView.centerYAnchor.constraint(equalTo: customView.centerYAnchor)
+            ])
+        
+        navigationItem.titleView = customView
+    }
 }

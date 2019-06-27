@@ -16,6 +16,7 @@ protocol ChatLogDisplayLogic: class
 {
     func displaySomething(viewModel: ChatLog.Something.ViewModel)
     func messageSent(viewModel: ChatLog.SendMessage.ViewModel)
+    func displayTappedUser(viewModel: ChatLog.GetTappedUser.ViewModel)
 }
 
 class ChatLogViewController: UIViewController, ChatLogDisplayLogic
@@ -70,16 +71,16 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic
     
     override func loadView() {
         super.loadView()
-        
         view = mainView
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
         setUpHandlers()
         doSomething()
-        view.backgroundColor = .white
+        getTappedUser()
     }
     
     // MARK: Do something
@@ -109,12 +110,20 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic
         }
     }
     
+    func getTappedUser() {
+        let request = ChatLog.GetTappedUser.Request()
+        interactor?.getTappedUser(request: request)
+    }
+    
     // MARK: Events replies
     
-    func messageSent(viewModel: ChatLog.SendMessage.ViewModel) { 
+    func messageSent(viewModel: ChatLog.SendMessage.ViewModel) {
         mainView.inputTextField.text = ""
     }
     
+    func displayTappedUser(viewModel: ChatLog.GetTappedUser.ViewModel) {
+        navigationItem.title = viewModel.user.name
+    }
     
     // MARK: Handlers
     

@@ -14,47 +14,40 @@ import UIKit
 
 @objc protocol NewMessageRoutingLogic
 {
-  //func routeToSomewhere(segue: UIStoryboardSegue?)
+    func routeToChatController()
 }
 
 protocol NewMessageDataPassing
 {
-  var dataStore: NewMessageDataStore? { get }
+    var dataStore: NewMessageDataStore? { get }
 }
 
 class NewMessageRouter: NSObject, NewMessageRoutingLogic, NewMessageDataPassing
 {
-  weak var viewController: NewMessageViewController?
-  var dataStore: NewMessageDataStore?
-  
-  // MARK: Routing
-  
-  //func routeToSomewhere(segue: UIStoryboardSegue?)
-  //{
-  //  if let segue = segue {
-  //    let destinationVC = segue.destination as! SomewhereViewController
-  //    var destinationDS = destinationVC.router!.dataStore!
-  //    passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-  //  } else {
-  //    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-  //    let destinationVC = storyboard.instantiateViewController(withIdentifier: "SomewhereViewController") as! SomewhereViewController
-  //    var destinationDS = destinationVC.router!.dataStore!
-  //    passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-  //    navigateToSomewhere(source: viewController!, destination: destinationVC)
-  //  }
-  //}
-
-  // MARK: Navigation
-  
-  //func navigateToSomewhere(source: NewMessageViewController, destination: SomewhereViewController)
-  //{
-  //  source.show(destination, sender: nil)
-  //}
-  
-  // MARK: Passing data
-  
-  //func passDataToSomewhere(source: NewMessageDataStore, destination: inout SomewhereDataStore)
-  //{
-  //  destination.name = source.name
-  //}
+    weak var viewController: NewMessageViewController?
+    var dataStore: NewMessageDataStore?
+    
+    // MARK: Routing
+    
+    func routeToChatController() {
+        let destinationVC = ChatLogViewController()
+        var destinationDS = destinationVC.router!.dataStore!
+        passDataToChatLogController(source: dataStore!, destination: &destinationDS)
+        navigateToChatController(source: viewController!, destination: destinationVC)
+    }
+    
+    // MARK: Navigation
+    
+    func navigateToChatController(source: NewMessageViewController, destination: ChatLogViewController)
+    {
+        let navController = UINavigationController(rootViewController: destination)
+        source.show(destination, sender: nil)
+    }
+    
+    // MARK: Passing data
+    
+    func passDataToChatLogController(source: NewMessageDataStore, destination: inout ChatLogDataStore)
+    {
+        destination.currentUser = source.userTapped
+    }
 }

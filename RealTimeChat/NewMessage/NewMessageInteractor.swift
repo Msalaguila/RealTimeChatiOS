@@ -16,15 +16,19 @@ protocol NewMessageBusinessLogic
 {
     func doSomething(request: NewMessage.Something.Request)
     func loadUsers(request: NewMessage.LoadAvailableUsers.Request)
+    func userTapped(request: NewMessage.TappedOnUser.Request)
 }
 
 protocol NewMessageDataStore
 {
     //var name: String { get set }
+    var userTapped: UserClass? { get set }
 }
 
 class NewMessageInteractor: NewMessageBusinessLogic, NewMessageDataStore
 {
+    var userTapped: UserClass?
+    
     var presenter: NewMessagePresentationLogic?
     var worker: NewMessageWorker?
     //var name: String = ""
@@ -46,5 +50,11 @@ class NewMessageInteractor: NewMessageBusinessLogic, NewMessageDataStore
             let response = NewMessage.LoadAvailableUsers.Response(users: users)
             self.presenter?.presentUsersLoaded(response: response)
         })
+    }
+    
+    func userTapped(request: NewMessage.TappedOnUser.Request) {
+        userTapped = request.userTapped
+        let response = NewMessage.TappedOnUser.Response()
+        presenter?.userTapped(response: response)
     }
 }

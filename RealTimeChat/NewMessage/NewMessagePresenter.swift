@@ -16,6 +16,7 @@ protocol NewMessagePresentationLogic
 {
     func presentSomething(response: NewMessage.Something.Response)
     func presentUsersLoaded(response: NewMessage.LoadAvailableUsers.Response)
+    func userTapped(response: NewMessage.TappedOnUser.Response)
 }
 
 class NewMessagePresenter: NewMessagePresentationLogic
@@ -33,5 +34,10 @@ class NewMessagePresenter: NewMessagePresentationLogic
     func presentUsersLoaded(response: NewMessage.LoadAvailableUsers.Response) {
         let viewModel = NewMessage.LoadAvailableUsers.ViewModel(users: response.users)
         viewController?.displayLoadedUsers(viewModel: viewModel)
+    }
+    
+    func userTapped(response: NewMessage.TappedOnUser.Response) {
+        let viewModel = NewMessage.TappedOnUser.ViewModel()
+        viewController?.userHasBeenSavedAfterTapping(viewModel: viewModel)
     }
 }

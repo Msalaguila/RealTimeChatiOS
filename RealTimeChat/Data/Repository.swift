@@ -14,6 +14,7 @@ class Repository {
     private static var INSTANCE: Repository?
     var currentUsers = [UserClass]()
     var messages = [Message]()
+    var homeMessages = [HomeMessage]()
     
     private init() {
         
@@ -59,7 +60,7 @@ class Repository {
                 
                 let user = UserClass(id: id, name: name, email: email, imageUrl: imageURL)
                 self.currentUsers.append(user)
-            
+                
                 completion(self.currentUsers)
             }
         }, withCancel: nil)
@@ -77,27 +78,36 @@ class Repository {
         completion()
     }
     
-    func loadAllMessages(completion: @escaping ([Message]) -> Void) {
+    func loadAllMessages(completion: @escaping ([HomeMessage]) -> Void) {
         let reference = Database.database().reference().child("messages")
         
-        DispatchQueue.global().async {
-            self.messages = [Message]()
+        self.messages = [Message]()
+        self.homeMessages = [HomeMessage]()
+        
+        reference.observe(.childAdded, with: { (snapshot) in
             
-            reference.observe(.childAdded, with: { (snapshot) in
+//            print(snapshot)
+            if let dictionary = snapshot.value as? [String: Any] {
+                guard let fromID = dictionary["fromID"] as? String else { return }
+                guard let text = dictionary["text"] as? String else { return }
+                guard let timestamp = dictionary["timestamp"] as? Int else { return }
+                guard let toID = dictionary["toID"] as? String else { return }
                 
-                if let dictionary = snapshot.value as? [String: Any] {
-                    guard let fromID = dictionary["fromID"] as? String else { return }
-                    guard let text = dictionary["text"] as? String else { return }
-                    guard let timestamp = dictionary["timestamp"] as? Int else { return }
-                    guard let toID = dictionary["toID"] as? String else { return }
+                let userReference = Database.database().reference().child("users").child(toID).observe(.value, with: { (userSnapshot) in
                     
-                    let message = Message(fromID: fromID, toID: toID, timestamp: timestamp, message: text)
-                    self.messages.append(message)
-                    
-                    completion(self.messages)
-                }
-                
-            }, withCancel: nil)
-        }
+                    if let userDictionary = userSnapshot.value as? [String: Any] {
+                        guard let imageUrl = userDictionary["profileImageUrl"] as? String else { return }
+                        guard let name = userDictionary["name"] as? String else { return }
+                        
+                        let homeMessage = HomeMessage(profileImageUrl: imageUrl, profileName: name, timestamp: String(timestamp))
+                        self.homeMessages.append(homeMessage)
+                        
+                        completion(self.homeMessages)
+                    }
+                }, withCancel: nil)
+            }
+            
+        }, withCancel: nil)
+        
     }
 }

@@ -173,7 +173,7 @@ extension LoginViewController {
             loginView.registerButton.setTitle("Login", for: .normal)
             
             loginView.topImage.image = UIImage(named: "gameofthrones_splash")
-        } else {
+        } else {
             
             loginView.containerHeight?.constant = 150
             

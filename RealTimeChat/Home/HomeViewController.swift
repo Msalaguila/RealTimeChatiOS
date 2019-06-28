@@ -19,7 +19,7 @@ protocol HomeDisplayLogic: class
     func displayIsUserLoggedIn(viewModel: Home.IsUserLoggedIn.ViewModel)
     func displayLogoutUser(viewModel: Home.LogoutUser.ViewModel)
     func displayCurrentUser(viewModel: Home.GetCurrentUserLoggedIn.ViewModel)
-    func displayMessages(viewModel: Home.LoadMessages.ViewModel)
+    func displayMessages(viewModel: Home.LoadHomeMessages.ViewModel)
 }
 
 class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
@@ -30,7 +30,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
     var router: (NSObjectProtocol & HomeRoutingLogic & HomeDataPassing)?
     var mainView = HomeView()
     var cellID = "cellID"
-    var messages = [Message]()
+    var messages = [HomeMessage]()
     
     // MARK: Object lifecycle
     
@@ -105,6 +105,11 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
         interactor?.checkIfUserIsLoggedIn(request: request)
     }
     
+    func loadMessages() {
+        let request = Home.LoadHomeMessages.Request()
+        interactor?.loadMessages(request: request)
+    }
+    
     // MARK: Events
     
     @objc func navBarPressed() {
@@ -118,11 +123,6 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
     
     @objc func newMessageButtonPressed() {
         router?.routeToNewMessage()
-    }
-    
-    func loadMessages() {
-        let request = Home.LoadMessages.Request()
-        interactor?.loadMessages(request: request)
     }
     
     // MARK: Events replies
@@ -154,7 +154,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
         }
     }
     
-    func displayMessages(viewModel: Home.LoadMessages.ViewModel) {
+    func displayMessages(viewModel: Home.LoadHomeMessages.ViewModel) {
         DispatchQueue.main.async {
             self.messages = viewModel.messages
             self.mainView.tableView.reloadData()
@@ -177,7 +177,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let cell = mainView.tableView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as? HomeViewCell {
             let message = messages[indexPath.item]
-            cell.nameLabel.text = message.message
+            cell.homeMessage = message
             return cell
         } else {
             return UICollectionViewCell()

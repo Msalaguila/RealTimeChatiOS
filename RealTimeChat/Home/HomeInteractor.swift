@@ -18,7 +18,7 @@ protocol HomeBusinessLogic
     func checkIfUserIsLoggedIn(request: Home.IsUserLoggedIn.Request)
     func logoutUser(request: Home.LogoutUser.Request)
     func getCurrentUser(request: Home.GetCurrentUserLoggedIn.Request)
-    func loadMessages(request: Home.LoadMessages.Request)
+    func loadMessages(request: Home.LoadHomeMessages.Request)
 }
 
 protocol HomeDataStore
@@ -72,10 +72,10 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore
         })
     }
     
-    func loadMessages(request: Home.LoadMessages.Request) {
+    func loadMessages(request: Home.LoadHomeMessages.Request) {
         worker = HomeWorker()
         worker?.loadAllMessages(completion: { (messages) in
-            let response = Home.LoadMessages.Response(messages: messages)
+            let response = Home.LoadHomeMessages.Response(messages: messages)
             self.presenter?.loadMessages(response: response)
         })
     }

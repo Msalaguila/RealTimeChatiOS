@@ -11,6 +11,14 @@ import LBTATools
 
 class HomeViewCell: UICollectionViewCell {
     
+    var homeMessage: HomeMessage? {
+        didSet {
+            guard let imageUrl = homeMessage?.profileImageUrl as? String else { return }
+            profileImage.loadImageUsingUrlString(urlString: imageUrl)
+            nameLabel.text = homeMessage?.profileName
+        }
+    }
+    
     private let profileImage: CustomImageView = {
         let im = CustomImageView()
         im.contentMode = .scaleAspectFill

@@ -72,18 +72,18 @@ enum Home
         }
     }
     
-    enum LoadMessages
+    enum LoadHomeMessages
     {
         struct Request
         {
         }
         struct Response
         {
-            var messages: [Message]
+            var messages: [HomeMessage]
         }
         struct ViewModel
         {
-            var messages: [Message]
+            var messages: [HomeMessage]
         }
     }
 

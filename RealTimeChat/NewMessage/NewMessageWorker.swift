@@ -21,7 +21,7 @@ class NewMessageWorker
     {
     }
     
-    func loadUsers(completion: @escaping (([UserClass]) -> Void)) {
+    func loadUsers(completion: @escaping (([UserClass]) -> Void)) {
         repository.getUsers { (users) in
             completion(users)
         }

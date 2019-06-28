@@ -40,7 +40,6 @@ class NewMessageRouter: NSObject, NewMessageRoutingLogic, NewMessageDataPassing
     
     func navigateToChatController(source: NewMessageViewController, destination: ChatLogViewController)
     {
-        let navController = UINavigationController(rootViewController: destination)
         source.show(destination, sender: nil)
     }
     

@@ -48,7 +48,7 @@ class HomeWorker
     }
     
     func loadAllMessages(completion: @escaping ([HomeMessage]) -> Void) {
-        repository.loadAllMessages { (messages) in
+        repository.loadHomeMessages { (messages) in
             completion(messages)
         }
     }

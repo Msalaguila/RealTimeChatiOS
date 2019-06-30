@@ -9,12 +9,37 @@
 import Foundation
 import Firebase
 
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l < r
+    case (nil, _?):
+        return true
+    default:
+        return false
+    }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l > r
+    default:
+        return rhs < lhs
+    }
+}
+
 class Repository {
     
     private static var INSTANCE: Repository?
     var currentUsers = [UserClass]()
     var messages = [Message]()
     var homeMessages = [HomeMessage]()
+    var homeMessagesSorted = [String: HomeMessage]()
     
     private init() {
         
@@ -53,7 +78,7 @@ class Repository {
         Database.database().reference().child("users").observe(.childAdded, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 
-                guard let id = snapshot.key as? String else { return }
+                let id = snapshot.key
                 guard let name = dictionary["name"] as? String else { return }
                 guard let email = dictionary["email"] as? String else { return }
                 guard let imageURL = dictionary["profileImageUrl"] as? String else { return }
@@ -78,7 +103,7 @@ class Repository {
         completion()
     }
     
-    func loadAllMessages(completion: @escaping ([HomeMessage]) -> Void) {
+    func loadHomeMessages(completion: @escaping ([HomeMessage]) -> Void) {
         let reference = Database.database().reference().child("messages")
         
         self.messages = [Message]()
@@ -86,28 +111,33 @@ class Repository {
         
         reference.observe(.childAdded, with: { (snapshot) in
             
-//            print(snapshot)
-            if let dictionary = snapshot.value as? [String: Any] {
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                
+                // 1. We get the whole Messsage object
                 guard let fromID = dictionary["fromID"] as? String else { return }
                 guard let text = dictionary["text"] as? String else { return }
-                guard let timestamp = dictionary["timestamp"] as? Int else { return }
+                guard let timestamp = dictionary["timestamp"] as? NSNumber else { return }
                 guard let toID = dictionary["toID"] as? String else { return }
                 
+                // 2. We get the user the message was sent to
                 let userReference = Database.database().reference().child("users").child(toID).observe(.value, with: { (userSnapshot) in
                     
                     if let userDictionary = userSnapshot.value as? [String: Any] {
                         guard let imageUrl = userDictionary["profileImageUrl"] as? String else { return }
                         guard let name = userDictionary["name"] as? String else { return }
                         
-                        let homeMessage = HomeMessage(profileImageUrl: imageUrl, profileName: name, timestamp: String(timestamp))
-                        self.homeMessages.append(homeMessage)
+                        let homeMessage = HomeMessage(profileImageUrl: imageUrl, profileName: name, timestamp: timestamp, lastMessage: text)
                         
-                        completion(self.homeMessages)
+                        self.homeMessagesSorted[toID] = homeMessage
+                        self.homeMessages = Array(self.homeMessagesSorted.values)
+                        
+                        self.homeMessages.sort { (m1, m2) -> Bool in
+                            return m1.timestamp?.int32Value > m2.timestamp?.int32Value
+                        }
                     }
+                    completion(self.homeMessages)
                 }, withCancel: nil)
             }
-            
         }, withCancel: nil)
-        
     }
 }

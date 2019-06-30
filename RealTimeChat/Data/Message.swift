@@ -11,6 +11,6 @@ import UIKit
 struct Message {
     var fromID: String?
     var toID: String?
-    var timestamp: Int?
+    var timestamp: NSNumber?
     var message: String?
 }

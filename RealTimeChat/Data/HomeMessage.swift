@@ -11,6 +11,6 @@ import UIKit
 struct HomeMessage {
     var profileImageUrl: String?
     var profileName: String?
-    var timestamp: String?
+    var timestamp: NSNumber?
     var lastMessage: String?
 }

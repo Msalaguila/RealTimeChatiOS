@@ -13,11 +13,30 @@ class HomeViewCell: UICollectionViewCell {
     
     var homeMessage: HomeMessage? {
         didSet {
-            guard let imageUrl = homeMessage?.profileImageUrl as? String else { return }
+            
+            guard let imageUrl = homeMessage?.profileImageUrl else { return }
             profileImage.loadImageUsingUrlString(urlString: imageUrl)
+            
             nameLabel.text = homeMessage?.profileName
+            
+            if let seconds = homeMessage?.timestamp?.doubleValue {
+                let timestampDate = Date(timeIntervalSince1970: seconds)
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "hh:mm:ss a"
+                dateLabel.text = dateFormatter.string(from: timestampDate)
+            }
+            
+            emailLabel.text = homeMessage?.lastMessage
         }
     }
+    
+    private let dateLabel: UILabel = {
+        var dLabel = UILabel()
+        dLabel.font = UIFont.systemFont(ofSize: 13)
+        dLabel.textColor = UIColor.lightGray
+        return dLabel
+    }()
     
     private let profileImage: CustomImageView = {
         let im = CustomImageView()
@@ -80,6 +99,10 @@ class HomeViewCell: UICollectionViewCell {
         contentView.addSubviewForAutolayout(separatorLine)
         
         separatorLine.anchor(top: nil, leading: profileImage.leadingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: CGSize(width: 0, height: 0.5))
+        
+        contentView.addSubviewForAutolayout(dateLabel)
+        
+        dateLabel.anchor(top: nameLabel.topAnchor, leading: nil, bottom: nil, trailing: contentView.trailingAnchor, padding: UIEdgeInsets(top: 8, left: 0, bottom: 0, right: -10), size: CGSize(width: 100, height: 12))
     }
     
     

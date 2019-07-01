@@ -26,4 +26,11 @@ class ChatLogWorker
             completion()
         }
     }
+    
+    func loadMessagesForTappedUser(request: ChatLog.LoadMessagesForTappedUser.Request, completion: @escaping ([Message]) -> Void) {
+        guard let user = request.user else { return }
+        repository.loadMessagesForUser(userToLoadMessages: user) { (messages) in
+            completion(messages)
+        }
+    }
 }

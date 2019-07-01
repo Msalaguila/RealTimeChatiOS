@@ -19,16 +19,20 @@ protocol HomeBusinessLogic
     func logoutUser(request: Home.LogoutUser.Request)
     func getCurrentUser(request: Home.GetCurrentUserLoggedIn.Request)
     func loadMessages(request: Home.LoadHomeMessages.Request)
+    func userHasBeenTapped(request: Home.UserTapped.Request)
 }
 
 protocol HomeDataStore
 {
     //var name: String { get set }
     var currentUser: UserClass? { get set }
+    var userTapped: UserClass? { get set }
 }
 
 class HomeInteractor: HomeBusinessLogic, HomeDataStore
 {
+    var userTapped: UserClass?
+    
     var currentUser: UserClass?
     
     var presenter: HomePresentationLogic?
@@ -78,5 +82,12 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore
             let response = Home.LoadHomeMessages.Response(messages: messages)
             self.presenter?.loadMessages(response: response)
         })
+    }
+    
+    func userHasBeenTapped(request: Home.UserTapped.Request) {
+        userTapped = request.user
+        
+        let response = Home.UserTapped.Response()
+        presenter?.presentUserHasBeenTapped(response: response)
     }
 }

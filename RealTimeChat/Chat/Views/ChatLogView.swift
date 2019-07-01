@@ -35,6 +35,13 @@ class ChatLogView: UIView {
         return separator
     }()
     
+    var chatLogCollectionView: UICollectionView = {
+        var layout = UICollectionViewFlowLayout()
+        var cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = UIColor.white
+        return cv
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         

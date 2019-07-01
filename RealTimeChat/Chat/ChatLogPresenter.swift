@@ -17,6 +17,7 @@ protocol ChatLogPresentationLogic
     func presentSomething(response: ChatLog.Something.Response)
     func messageSent(response: ChatLog.SendMessage.Response)
     func getTappedUser(response: ChatLog.GetTappedUser.Response)
+    func presentMessagesForTappedUser(response: ChatLog.LoadMessagesForTappedUser.Response)
 }
 
 class ChatLogPresenter: ChatLogPresentationLogic
@@ -39,5 +40,10 @@ class ChatLogPresenter: ChatLogPresentationLogic
     func getTappedUser(response: ChatLog.GetTappedUser.Response) {
         let viewModel = ChatLog.GetTappedUser.ViewModel(user: response.user)
         viewController?.displayTappedUser(viewModel: viewModel)
+    }
+    
+    func presentMessagesForTappedUser(response: ChatLog.LoadMessagesForTappedUser.Response) {
+        let viewModel = ChatLog.LoadMessagesForTappedUser.ViewModel(messages: response.messages)
+        viewController?.displayMessagesForTappedUser(viewModel: viewModel)
     }
 }

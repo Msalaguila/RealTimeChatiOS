@@ -93,6 +93,7 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing
     func passDataToChatLogController(source: HomeDataStore, destination: inout ChatLogDataStore)
     {
         destination.currentUser = source.currentUser
+        destination.userTapped = source.userTapped
     }
     
     

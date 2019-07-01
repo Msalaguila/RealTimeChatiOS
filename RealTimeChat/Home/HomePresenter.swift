@@ -19,6 +19,7 @@ protocol HomePresentationLogic
     func logoutUser(response: Home.LogoutUser.Response)
     func getCurrentUser(response: Home.GetCurrentUserLoggedIn.Response)
     func loadMessages(response: Home.LoadHomeMessages.Response)
+    func presentUserHasBeenTapped(response: Home.UserTapped.Response)
 }
 
 class HomePresenter: HomePresentationLogic
@@ -51,5 +52,10 @@ class HomePresenter: HomePresentationLogic
     func loadMessages(response: Home.LoadHomeMessages.Response) {
         let viewModel = Home.LoadHomeMessages.ViewModel(messages: response.messages)
         viewController?.displayMessages(viewModel: viewModel)
+    }
+    
+    func presentUserHasBeenTapped(response: Home.UserTapped.Response) {
+        let viewModel = Home.UserTapped.ViewModel()
+        viewController?.displayUserHasBeenTapped(viewModel: viewModel)
     }
 }

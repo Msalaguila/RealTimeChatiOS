@@ -13,4 +13,5 @@ struct HomeMessage {
     var profileName: String?
     var timestamp: NSNumber?
     var lastMessage: String?
+    var user: UserClass?
 }

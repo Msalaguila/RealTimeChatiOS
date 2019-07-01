@@ -17,16 +17,20 @@ protocol ChatLogBusinessLogic
     func doSomething(request: ChatLog.Something.Request)
     func sendMessage(request: ChatLog.SendMessage.Request)
     func getTappedUser(request: ChatLog.GetTappedUser.Request)
+    func loadMessagesForUserTapped(request: ChatLog.LoadMessagesForTappedUser.Request)
 }
 
 protocol ChatLogDataStore
 {
     //var name: String { get set }
     var currentUser: UserClass? { get set }
+    var userTapped: UserClass? { get set }
 }
 
 class ChatLogInteractor: ChatLogBusinessLogic, ChatLogDataStore
 {
+    var userTapped: UserClass?
+    
     var currentUser: UserClass?
     
     var presenter: ChatLogPresentationLogic?
@@ -54,7 +58,16 @@ class ChatLogInteractor: ChatLogBusinessLogic, ChatLogDataStore
     }
     
     func getTappedUser(request: ChatLog.GetTappedUser.Request) {
-        let response = ChatLog.GetTappedUser.Response(user: currentUser!)
+        let response = ChatLog.GetTappedUser.Response(user: userTapped!)
         presenter?.getTappedUser(response: response)
+    }
+    
+    func loadMessagesForUserTapped(request: ChatLog.LoadMessagesForTappedUser.Request) {
+        worker = ChatLogWorker()
+        let newRequest = ChatLog.LoadMessagesForTappedUser.Request(user: userTapped)
+        worker?.loadMessagesForTappedUser(request: newRequest, completion: { (messages) in
+            let response = ChatLog.LoadMessagesForTappedUser.Response(messages: messages)
+            self.presenter?.presentMessagesForTappedUser(response: response)
+        })
     }
 }

@@ -40,6 +40,7 @@ class Repository {
     var messages = [Message]()
     var homeMessages = [HomeMessage]()
     var homeMessagesSorted = [String: HomeMessage]()
+    var chatMessages = [Message]()
     
     private init() {
         
@@ -95,23 +96,37 @@ class Repository {
         let reference = Database.database().reference().child("messages")
         let messageIDReference = reference.childByAutoId()
         
-        let fromID = Auth.auth().currentUser?.uid
-        let toID = toUser.id
-        let timestamp: Int = Int(NSDate().timeIntervalSince1970)
+        let fromID = Auth.auth().currentUser!.uid
+        let toID = toUser.id!
+        let timestamp: NSNumber = NSNumber(value: NSDate().timeIntervalSince1970)
         let values = ["text": message, "fromID": fromID, "toID": toID, "timestamp": timestamp] as [String : Any]
-        messageIDReference.updateChildValues(values)
+        
+        messageIDReference.updateChildValues(values) { (error, ref) in
+            
+            if error != nil {
+                print(error)
+                return
+            }
+            
+            let userMessagesRef = Database.database().reference().child("user-messages").child(fromID)
+            let messageID = messageIDReference.key
+            let values = [messageID : 1]
+            userMessagesRef.updateChildValues(values)
+            
+            let recipientMessagesRef = Database.database().reference().child("user-messages").child(toID)
+            recipientMessagesRef.updateChildValues(values)
+        }
         completion()
     }
     
-    func loadHomeMessages(completion: @escaping ([HomeMessage]) -> Void) {
-        let reference = Database.database().reference().child("messages")
+    fileprivate func getMessageWithUID(_ messageID: String, completion: @escaping ([HomeMessage]) -> Void) {
+        let messageRef = Database.database().reference().child("messages").child(messageID)
         
-        self.messages = [Message]()
-        self.homeMessages = [HomeMessage]()
-        
-        reference.observe(.childAdded, with: { (snapshot) in
+        messageRef.observeSingleEvent(of: .value, with: { (messageSnapshot) in
             
-            if let dictionary = snapshot.value as? [String: AnyObject] {
+            if let dictionary = messageSnapshot.value as? [String: AnyObject] {
+                
+                let chatPartnerID: String?
                 
                 // 1. We get the whole Messsage object
                 guard let fromID = dictionary["fromID"] as? String else { return }
@@ -119,16 +134,27 @@ class Repository {
                 guard let timestamp = dictionary["timestamp"] as? NSNumber else { return }
                 guard let toID = dictionary["toID"] as? String else { return }
                 
+                let loggedInUserID = Auth.auth().currentUser?.uid
+                if fromID == loggedInUserID {
+                    chatPartnerID = toID
+                } else {
+                    chatPartnerID = fromID
+                }
+                
                 // 2. We get the user the message was sent to
-                let userReference = Database.database().reference().child("users").child(toID).observe(.value, with: { (userSnapshot) in
+                let userReference = Database.database().reference().child("users").child(chatPartnerID!).observe(.value, with: { (userSnapshot) in
                     
                     if let userDictionary = userSnapshot.value as? [String: Any] {
                         guard let imageUrl = userDictionary["profileImageUrl"] as? String else { return }
                         guard let name = userDictionary["name"] as? String else { return }
+                        guard let userID = userSnapshot.key as? String else { return }
+                        guard let email = userDictionary["email"] as? String else { return }
                         
-                        let homeMessage = HomeMessage(profileImageUrl: imageUrl, profileName: name, timestamp: timestamp, lastMessage: text)
+                        let user = UserClass(id: userID, name: name, email: email, imageUrl: imageUrl)
                         
-                        self.homeMessagesSorted[toID] = homeMessage
+                        let homeMessage = HomeMessage(profileImageUrl: imageUrl, profileName: name, timestamp: timestamp, lastMessage: text, user: user)
+                        
+                        self.homeMessagesSorted[chatPartnerID!] = homeMessage
                         self.homeMessages = Array(self.homeMessagesSorted.values)
                         
                         self.homeMessages.sort { (m1, m2) -> Bool in
@@ -138,6 +164,69 @@ class Repository {
                     completion(self.homeMessages)
                 }, withCancel: nil)
             }
+        }, withCancel: nil)
+    }
+    
+    func loadUserMessages(completion: @escaping ([HomeMessage]) -> Void) {
+        
+        messages = [Message]()
+        homeMessages = [HomeMessage]()
+        
+        let ref = Database.database().reference().child("user-messages")
+        let userUID = Auth.auth().currentUser!.uid
+        let userReference = ref.child(userUID)
+        
+        // We get the reference to the messages sent to that user
+        userReference.observe(.childAdded) { (snapshot) in
+            
+            // For every message reference, we recover the message from the message node
+            let messageID = snapshot.key
+            
+            self.getMessageWithUID(messageID, completion: completion)
+        }
+    }
+    
+    func loadMessagesForUser(userToLoadMessages: UserClass, completion: @escaping ([Message]) -> Void) {
+        
+        chatMessages = [Message]()
+        
+        guard let userTappedID = userToLoadMessages.id as? String else { return }
+        print("user tapped \(userTappedID)")
+        
+        guard let userID = Auth.auth().currentUser?.uid as? String else { return }
+        print("userID \(userID)")
+        
+        // 1. We get all the messages from the userLoggedIn
+        
+        let ref = Database.database().reference().child("user-messages").child(userID)
+        ref.observe(.childAdded, with: { (snapshot) in
+            print(snapshot)
+            
+            // 2. We retrieve each message
+            let messageID = snapshot.key
+            let messageRef = Database.database().reference().child("messages").child(messageID)
+            messageRef.observeSingleEvent(of: .value, with: { (messageSnapshot) in
+                
+                if let dictionary = messageSnapshot.value as? [String: AnyObject] {
+                    print(messageSnapshot)
+                    
+                    guard let fromID = dictionary["fromID"] as? String else { return }
+                    guard let text = dictionary["text"] as? String else { return }
+                    guard let timestamp = dictionary["timestamp"] as? NSNumber else { return }
+                    guard let toID = dictionary["toID"] as? String else { return }
+                    
+                    // 3. We check that the message belongs to the userTappedID conversation
+                    if fromID == userTappedID || toID == userTappedID {
+                        let message = Message(fromID: fromID, toID: toID, timestamp: timestamp, message: text)
+                        
+                        self.chatMessages.append(message)
+                        self.chatMessages.sort { (message1, message2) -> Bool in
+                            return message1.timestamp?.int32Value > message2.timestamp?.int32Value
+                        }
+                        completion(self.chatMessages)
+                    }
+                }
+            }, withCancel: nil)
         }, withCancel: nil)
     }
 }

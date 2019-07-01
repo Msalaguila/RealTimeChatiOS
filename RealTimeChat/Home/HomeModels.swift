@@ -86,5 +86,21 @@ enum Home
             var messages: [HomeMessage]
         }
     }
+    
+    enum UserTapped
+    {
+        struct Request
+        {
+            var user: UserClass
+        }
+        struct Response
+        {
+            
+        }
+        struct ViewModel
+        {
+            
+        }
+    }
 
 }

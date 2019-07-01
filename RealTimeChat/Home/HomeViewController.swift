@@ -20,6 +20,7 @@ protocol HomeDisplayLogic: class
     func displayLogoutUser(viewModel: Home.LogoutUser.ViewModel)
     func displayCurrentUser(viewModel: Home.GetCurrentUserLoggedIn.ViewModel)
     func displayMessages(viewModel: Home.LoadHomeMessages.ViewModel)
+    func displayUserHasBeenTapped(viewModel: Home.UserTapped.ViewModel)
 }
 
 class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
@@ -74,8 +75,6 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
         setUpNavBar()
         setUpTableView()
         doSomething()
-        loadMessages()
-        
     }
     
     var users = [UserClass]()
@@ -83,6 +82,8 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
         super.viewWillAppear(animated)
         
         checkIfUserIsLoggedIn()
+        self.messages.removeAll()
+        self.mainView.tableView.reloadData()
     }
     
     // MARK: Do something
@@ -112,10 +113,6 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
     
     // MARK: Events
     
-    @objc func navBarPressed() {
-        router?.routeToChatLog()
-    }
-    
     @objc func logoutButtonPressed() {
         let request = Home.LogoutUser.Request()
         interactor?.logoutUser(request: request)
@@ -135,6 +132,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
         else {
             let request = Home.GetCurrentUserLoggedIn.Request()
             interactor?.getCurrentUser(request: request)
+            loadMessages()
         }
     }
     
@@ -159,6 +157,10 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
             self.messages = viewModel.messages
             self.mainView.tableView.reloadData()
         }
+    }
+    
+    func displayUserHasBeenTapped(viewModel: Home.UserTapped.ViewModel) {
+        router?.routeToChatLog()
     }
     
     // MARK: Table View Methods
@@ -188,11 +190,19 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
         return CGSize(width: view.frame.width, height: 100)
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let userTapped = messages[indexPath.item].user else { return }
+        
+        let request = Home.UserTapped.Request(user: userTapped)
+        interactor?.userHasBeenTapped(request: request)
+    }
+    
     // MARK: NavBar View
     
     let profileImageView: CustomImageView = {
         var image = CustomImageView()
         image.layer.cornerRadius = 17.5
+        image.clipsToBounds = true
         return image
     }()
     
@@ -210,7 +220,6 @@ extension HomeViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logoutButtonPressed))
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "new_message_icon"), style: .plain, target: self, action: #selector(newMessageButtonPressed))
-        navigationController?.navigationBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(navBarPressed)))
         
         let customView = UIView()
         customView.backgroundColor = .blue

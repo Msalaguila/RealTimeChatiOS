@@ -58,4 +58,20 @@ enum ChatLog
             var user: UserClass
         }
     }
+    
+    enum LoadMessagesForTappedUser
+    {
+        struct Request
+        {
+            var user: UserClass?
+        }
+        struct Response
+        {
+            var messages: [Message]
+        }
+        struct ViewModel
+        {
+            var messages: [Message]
+        }
+    }
 }

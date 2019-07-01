@@ -17,13 +17,18 @@ protocol ChatLogDisplayLogic: class
     func displaySomething(viewModel: ChatLog.Something.ViewModel)
     func messageSent(viewModel: ChatLog.SendMessage.ViewModel)
     func displayTappedUser(viewModel: ChatLog.GetTappedUser.ViewModel)
+    func displayMessagesForTappedUser(viewModel: ChatLog.LoadMessagesForTappedUser.ViewModel)
 }
 
-class ChatLogViewController: UIViewController, ChatLogDisplayLogic
+class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 {
     var interactor: ChatLogBusinessLogic?
     var router: (NSObjectProtocol & ChatLogRoutingLogic & ChatLogDataPassing)?
     var mainView = ChatLogView()
+    
+    var cellID = "cellID"
+    
+    var chatMessages = [Message]()
     
     // MARK: Object lifecycle
     
@@ -55,16 +60,11 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic
         router.dataStore = interactor
     }
     
-    // MARK: Routing
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        if let scene = segue.identifier {
-            let selector = NSSelectorFromString("routeTo\(scene)WithSegue:")
-            if let router = router, router.responds(to: selector) {
-                router.perform(selector, with: segue)
-            }
-        }
+    func setUpCollectionView() {
+        mainView.chatLogCollectionView.delegate = self
+        mainView.chatLogCollectionView.dataSource = self
+        
+        mainView.chatLogCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
     }
     
     // MARK: View lifecycle
@@ -79,8 +79,10 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic
         super.viewDidLoad()
         
         setUpHandlers()
+        setUpCollectionView()
         doSomething()
         getTappedUser()
+        loadMessagesForTappedUser()
     }
     
     // MARK: Do something
@@ -96,6 +98,11 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic
     func displaySomething(viewModel: ChatLog.Something.ViewModel)
     {
         //nameTextField.text = viewModel.name
+    }
+    
+    func loadMessagesForTappedUser() {
+        let request = ChatLog.LoadMessagesForTappedUser.Request()
+        interactor?.loadMessagesForUserTapped(request: request)
     }
     
     // MARK: Events
@@ -125,12 +132,32 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic
         navigationItem.title = viewModel.user.name
     }
     
+    func displayMessagesForTappedUser(viewModel: ChatLog.LoadMessagesForTappedUser.ViewModel) {
+        chatMessages = viewModel.messages
+        print(chatMessages.count)
+    }
+    
     // MARK: Handlers
     
     func setUpHandlers() {
         mainView.sendButton.addTarget(self, action: #selector(sendButtonPressed), for: .touchUpInside)
         mainView.inputTextField.delegate = self
     }
+    
+    // MARK: Table View Methods
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        return UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 100)
+    }
+    
 }
 
 extension ChatLogViewController: UITextFieldDelegate {
@@ -138,5 +165,4 @@ extension ChatLogViewController: UITextFieldDelegate {
         sendButtonPressed()
         return true
     }
-    
 }

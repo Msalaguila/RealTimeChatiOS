@@ -50,7 +50,7 @@ class ChatLogInteractor: ChatLogBusinessLogic, ChatLogDataStore
     
     func sendMessage(request: ChatLog.SendMessage.Request) {
         worker = ChatLogWorker()
-        let newRequest = ChatLog.SendMessage.Request(message: request.message, userToSendMessage: currentUser!)
+        let newRequest = ChatLog.SendMessage.Request(message: request.message, userToSendMessage: userTapped!)
         worker?.sendMessage(request: newRequest, completion: {
             let response = ChatLog.SendMessage.Response()
             self.presenter?.messageSent(response: response)

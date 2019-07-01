@@ -134,6 +134,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     
     func displayMessagesForTappedUser(viewModel: ChatLog.LoadMessagesForTappedUser.ViewModel) {
         chatMessages = viewModel.messages
+        mainView.chatLogCollectionView.reloadData()
         print(chatMessages.count)
     }
     
@@ -147,17 +148,21 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     // MARK: Table View Methods
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return chatMessages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return UICollectionViewCell()
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as? UICollectionViewCell {
+            cell.backgroundColor = .blue
+            return cell
+        } else {
+            return UICollectionViewCell()
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: 100)
     }
-    
 }
 
 extension ChatLogViewController: UITextFieldDelegate {

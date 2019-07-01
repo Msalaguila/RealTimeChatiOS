@@ -80,14 +80,17 @@ class Repository {
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 
                 let id = snapshot.key
-                guard let name = dictionary["name"] as? String else { return }
-                guard let email = dictionary["email"] as? String else { return }
-                guard let imageURL = dictionary["profileImageUrl"] as? String else { return }
                 
-                let user = UserClass(id: id, name: name, email: email, imageUrl: imageURL)
-                self.currentUsers.append(user)
-                
-                completion(self.currentUsers)
+                if id != Auth.auth().currentUser?.uid {
+                    guard let name = dictionary["name"] as? String else { return }
+                    guard let email = dictionary["email"] as? String else { return }
+                    guard let imageURL = dictionary["profileImageUrl"] as? String else { return }
+                    
+                    let user = UserClass(id: id, name: name, email: email, imageUrl: imageURL)
+                    self.currentUsers.append(user)
+                    
+                    completion(self.currentUsers)
+                }
             }
         }, withCancel: nil)
     }

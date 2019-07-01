@@ -22,12 +22,12 @@ protocol NewMessageBusinessLogic
 protocol NewMessageDataStore
 {
     //var name: String { get set }
-    var userTapped: UserClass? { get set }
+    var userTappedInNewMessage: UserClass? { get set }
 }
 
 class NewMessageInteractor: NewMessageBusinessLogic, NewMessageDataStore
 {
-    var userTapped: UserClass?
+    var userTappedInNewMessage: UserClass?
     
     var presenter: NewMessagePresentationLogic?
     var worker: NewMessageWorker?
@@ -53,7 +53,7 @@ class NewMessageInteractor: NewMessageBusinessLogic, NewMessageDataStore
     }
     
     func userTapped(request: NewMessage.TappedOnUser.Request) {
-        userTapped = request.userTapped
+        userTappedInNewMessage = request.userTapped
         let response = NewMessage.TappedOnUser.Response()
         presenter?.userTapped(response: response)
     }

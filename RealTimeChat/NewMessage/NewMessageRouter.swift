@@ -47,6 +47,6 @@ class NewMessageRouter: NSObject, NewMessageRoutingLogic, NewMessageDataPassing
     
     func passDataToChatLogController(source: NewMessageDataStore, destination: inout ChatLogDataStore)
     {
-        destination.currentUser = source.userTapped
+        destination.userTapped = source.userTappedInNewMessage
     }
 }

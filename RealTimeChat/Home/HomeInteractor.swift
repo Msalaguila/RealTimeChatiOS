@@ -26,12 +26,12 @@ protocol HomeDataStore
 {
     //var name: String { get set }
     var currentUser: UserClass? { get set }
-    var userTapped: UserClass? { get set }
+    var userTappedInHome: UserClass? { get set }
 }
 
 class HomeInteractor: HomeBusinessLogic, HomeDataStore
 {
-    var userTapped: UserClass?
+    var userTappedInHome: UserClass?
     
     var currentUser: UserClass?
     
@@ -85,7 +85,7 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore
     }
     
     func userHasBeenTapped(request: Home.UserTapped.Request) {
-        userTapped = request.user
+        userTappedInHome = request.user
         
         let response = Home.UserTapped.Response()
         presenter?.presentUserHasBeenTapped(response: response)

@@ -12,6 +12,7 @@
 
 import UIKit
 import LBTATools
+import Firebase
 
 protocol HomeDisplayLogic: class
 {

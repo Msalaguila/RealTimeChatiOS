@@ -111,15 +111,15 @@ class Repository {
                 return
             }
             
-            let userMessagesRef = Database.database().reference().child("user-messages").child(fromID)
             let messageID = messageIDReference.key
-            let values = [messageID : 1]
-            userMessagesRef.updateChildValues(values)
+            let userMessagesRef = Database.database().reference().child("user-messages").child(fromID).child(messageID!)
             
-            let recipientMessagesRef = Database.database().reference().child("user-messages").child(toID)
-            recipientMessagesRef.updateChildValues(values)
+            userMessagesRef.setValue(1)
+            
+            let recipientMessagesRef = Database.database().reference().child("user-messages").child(toID).child(messageID!)
+            recipientMessagesRef.setValue(1)
+            completion()
         }
-        completion()
     }
     
     fileprivate func getMessageWithUID(_ messageID: String, completion: @escaping ([HomeMessage]) -> Void) {
@@ -189,9 +189,10 @@ class Repository {
         }
     }
     
+    var ref = Database.database().reference().child("user-messages")
+    
     func loadMessagesForUser(userToLoadMessages: UserClass, completion: @escaping ([Message]) -> Void) {
-        
-        chatMessages = [Message]()
+        self.chatMessages.removeAll()
         
         guard let userTappedID = userToLoadMessages.id as? String else { return }
         print("user tapped \(userTappedID)")
@@ -201,10 +202,8 @@ class Repository {
         
         // 1. We get all the messages from the userLoggedIn
         
-        let ref = Database.database().reference().child("user-messages").child(userID)
-        ref.observe(.childAdded, with: { (snapshot) in
+        ref.child(userID).observe(.childAdded, with: { (snapshot) in
             print(snapshot)
-            
             // 2. We retrieve each message
             let messageID = snapshot.key
             let messageRef = Database.database().reference().child("messages").child(messageID)
@@ -219,13 +218,16 @@ class Repository {
                     guard let toID = dictionary["toID"] as? String else { return }
                     
                     // 3. We check that the message belongs to the userTappedID conversation
-                    if fromID == userTappedID || toID == userTappedID {
-                        let message = Message(fromID: fromID, toID: toID, timestamp: timestamp, message: text)
+                    let message = Message(fromID: fromID, toID: toID, timestamp: timestamp, message: text)
+                    
+                    if message.chatPartnerId() == userTappedID {
                         
                         self.chatMessages.append(message)
                         self.chatMessages.sort { (message1, message2) -> Bool in
-                            return message1.timestamp?.int32Value > message2.timestamp?.int32Value
+                            return message1.timestamp?.int32Value < message2.timestamp?.int32Value
                         }
+                        print(self.chatMessages.count)
+                        
                         completion(self.chatMessages)
                     }
                 }

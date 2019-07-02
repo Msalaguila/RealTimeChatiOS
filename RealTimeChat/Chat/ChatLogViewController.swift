@@ -11,6 +11,7 @@
 //
 
 import UIKit
+import Firebase
 
 protocol ChatLogDisplayLogic: class
 {
@@ -64,7 +65,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
         mainView.chatLogCollectionView.delegate = self
         mainView.chatLogCollectionView.dataSource = self
         
-        mainView.chatLogCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
+        mainView.chatLogCollectionView.register(ChatLogCell.self, forCellWithReuseIdentifier: cellID)
     }
     
     // MARK: View lifecycle
@@ -83,6 +84,14 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
         doSomething()
         getTappedUser()
         loadMessagesForTappedUser()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        // Remove the reference
+        var currentUser = Auth.auth().currentUser?.uid
+        Repository.getInstance().ref.child(currentUser!).removeAllObservers()
     }
     
     // MARK: Do something
@@ -126,6 +135,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     
     func messageSent(viewModel: ChatLog.SendMessage.ViewModel) {
         mainView.inputTextField.text = ""
+//        loadMessagesForTappedUser()
     }
     
     func displayTappedUser(viewModel: ChatLog.GetTappedUser.ViewModel) {
@@ -133,10 +143,15 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     }
     
     func displayMessagesForTappedUser(viewModel: ChatLog.LoadMessagesForTappedUser.ViewModel) {
+        chatMessages.removeAll()
         chatMessages = viewModel.messages
         mainView.chatLogCollectionView.reloadData()
-        print(chatMessages.count)
+        
+        var row = chatMessages.count - 1
+        var indexPath = IndexPath(row: row, section: 0)
+        mainView.chatLogCollectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
     }
+    
     
     // MARK: Handlers
     
@@ -152,8 +167,9 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as? UICollectionViewCell {
-            cell.backgroundColor = .blue
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as? ChatLogCell {
+            let messageText = chatMessages[indexPath.item].message
+            cell.messageText.text = messageText
             return cell
         } else {
             return UICollectionViewCell()

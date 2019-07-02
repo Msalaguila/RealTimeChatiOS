@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E21A33E22CB8C5C00CC0104 /* ChatLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E21A33D22CB8C5C00CC0104 /* ChatLogCell.swift */; };
 		4E28415822C540ED0022195B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E28415722C540ED0022195B /* Message.swift */; };
 		4E74D38922B83C1F005C6EDF /* NewMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E74D38822B83C1F005C6EDF /* NewMessageCell.swift */; };
 		4E7B81E622C559FF001AF615 /* HomeViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E7B81E522C559FF001AF615 /* HomeViewCell.swift */; };
@@ -52,6 +53,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4E21A33D22CB8C5C00CC0104 /* ChatLogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogCell.swift; sourceTree = "<group>"; };
 		4E28415722C540ED0022195B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		4E74D38822B83C1F005C6EDF /* NewMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageCell.swift; sourceTree = "<group>"; };
 		4E7B81E522C559FF001AF615 /* HomeViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewCell.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				4E8762DC22C3596300F761BF /* ChatLogView.swift */,
+				4E21A33D22CB8C5C00CC0104 /* ChatLogCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 				4EE2A22022B646A3008AE412 /* LoginRouter.swift in Sources */,
 				4E8CB89722B812910080B149 /* NewMessageModels.swift in Sources */,
 				4EE2A22222B646A3008AE412 /* LoginViewController.swift in Sources */,
+				4E21A33E22CB8C5C00CC0104 /* ChatLogCell.swift in Sources */,
 				4EE2A22F22B646B6008AE412 /* HomeInteractor.swift in Sources */,
 				4E8CB88922B806510080B149 /* Repository.swift in Sources */,
 				4E8CB88B22B8071C0080B149 /* User.swift in Sources */,

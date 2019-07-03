@@ -195,43 +195,57 @@ class Repository {
         self.chatMessages.removeAll()
         
         guard let userTappedID = userToLoadMessages.id as? String else { return }
-        print("user tapped \(userTappedID)")
         
-        guard let userID = Auth.auth().currentUser?.uid as? String else { return }
-        print("userID \(userID)")
         
-        // 1. We get all the messages from the userLoggedIn
-        
-        ref.child(userID).observe(.childAdded, with: { (snapshot) in
-            print(snapshot)
-            // 2. We retrieve each message
-            let messageID = snapshot.key
-            let messageRef = Database.database().reference().child("messages").child(messageID)
-            messageRef.observeSingleEvent(of: .value, with: { (messageSnapshot) in
+        var user = getUserWithID(userUID: userTappedID) { (user) in
+            
+            let userProfileImageUrl = user.imageUrl
+            
+            guard let userID = Auth.auth().currentUser?.uid as? String else { return }
+            
+            
+            // 1. We get all the messages from the userLoggedIn
+            
+            self.ref.child(userID).observe(.childAdded, with: { (snapshot) in
                 
-                if let dictionary = messageSnapshot.value as? [String: AnyObject] {
-                    print(messageSnapshot)
+                // 2. We retrieve each message
+                let messageID = snapshot.key
+                let messageRef = Database.database().reference().child("messages").child(messageID)
+                messageRef.observeSingleEvent(of: .value, with: { (messageSnapshot) in
                     
-                    guard let fromID = dictionary["fromID"] as? String else { return }
-                    guard let text = dictionary["text"] as? String else { return }
-                    guard let timestamp = dictionary["timestamp"] as? NSNumber else { return }
-                    guard let toID = dictionary["toID"] as? String else { return }
-                    
-                    // 3. We check that the message belongs to the userTappedID conversation
-                    let message = Message(fromID: fromID, toID: toID, timestamp: timestamp, message: text)
-                    
-                    if message.chatPartnerId() == userTappedID {
+                    if let dictionary = messageSnapshot.value as? [String: AnyObject] {
                         
-                        self.chatMessages.append(message)
-                        self.chatMessages.sort { (message1, message2) -> Bool in
-                            return message1.timestamp?.int32Value < message2.timestamp?.int32Value
+                        guard let fromID = dictionary["fromID"] as? String else { return }
+                        guard let text = dictionary["text"] as? String else { return }
+                        guard let timestamp = dictionary["timestamp"] as? NSNumber else { return }
+                        guard let toID = dictionary["toID"] as? String else { return }
+                        
+                        // 3. We check that the message belongs to the userTappedID conversation
+                        let message = Message(fromID: fromID, toID: toID, timestamp: timestamp, message: text, profileImageURL: userProfileImageUrl)
+                        
+                        if message.chatPartnerId() == userTappedID {
+                            
+                            self.chatMessages.append(message)
+                            self.chatMessages.sort { (message1, message2) -> Bool in
+                                return message1.timestamp?.int32Value < message2.timestamp?.int32Value
+                            }
+                            
+                            completion(self.chatMessages)
                         }
-                        print(self.chatMessages.count)
-                        
-                        completion(self.chatMessages)
                     }
-                }
-            }, withCancel: nil)
-        }, withCancel: nil)
+                }, withCancel: nil)
+            }, withCancel: nil)}
+    }
+    
+    
+    private func getUserWithID(userUID: String, completion: @escaping (UserClass) -> Void) {
+        var ref = Database.database().reference().child("users").child(userUID)
+        ref.observe(.value) { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                guard let profileImageUrl = dictionary["profileImageUrl"] as? String else { return }
+                let user = UserClass(id: nil, name: nil, email: nil, imageUrl: profileImageUrl)
+                completion(user)
+            }
+        }
     }
 }

@@ -27,7 +27,8 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     var router: (NSObjectProtocol & ChatLogRoutingLogic & ChatLogDataPassing)?
     var mainView = ChatLogView()
     
-    var cellID = "cellID"
+    var userCellID = "userCellID"
+    var receiverCellID = "receiverCellID"
     
     var chatMessages = [Message]()
     
@@ -65,7 +66,8 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
         mainView.chatLogCollectionView.delegate = self
         mainView.chatLogCollectionView.dataSource = self
         
-        mainView.chatLogCollectionView.register(ChatLogCell.self, forCellWithReuseIdentifier: cellID)
+        mainView.chatLogCollectionView.register(UserChatLogCell.self, forCellWithReuseIdentifier: userCellID)
+        mainView.chatLogCollectionView.register(ReceiverChatLogCell.self, forCellWithReuseIdentifier: receiverCellID)
     }
     
     // MARK: View lifecycle
@@ -135,7 +137,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     
     func messageSent(viewModel: ChatLog.SendMessage.ViewModel) {
         mainView.inputTextField.text = ""
-//        loadMessagesForTappedUser()
+        //        loadMessagesForTappedUser()
     }
     
     func displayTappedUser(viewModel: ChatLog.GetTappedUser.ViewModel) {
@@ -167,18 +169,48 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as? ChatLogCell {
-            let messageText = chatMessages[indexPath.item].message
-            cell.messageText.text = messageText
+        
+        let messageID = chatMessages[indexPath.item].fromID
+        
+        if messageID == Auth.auth().currentUser?.uid {
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: userCellID, for: indexPath) as! UserChatLogCell
+            let message = chatMessages[indexPath.item]
+            let messageText = message.message
+            cell.message = message
+            
+            let estimatedWitdh = estimateFrameForText(messageText!).width
+            cell.bubbleWidthAnchor?.constant = estimatedWitdh + 18
+            
             return cell
         } else {
-            return UICollectionViewCell()
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: receiverCellID, for: indexPath) as! ReceiverChatLogCell
+            let message = chatMessages[indexPath.item]
+            let messageText = message.message
+            cell.message = message
+            
+            let estimatedWitdh = estimateFrameForText(messageText!).width
+            cell.bubbleWidthAnchor?.constant = estimatedWitdh + 18
+            
+            return cell
         }
     }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 100)
+        
+        let message = chatMessages[indexPath.item]
+        let messageText = message.message
+        let rect = estimateFrameForText(messageText!)
+        let height = rect.height + 20
+        
+        return CGSize(width: view.frame.width, height: height)
     }
+    
+    fileprivate func estimateFrameForText(_ text: String) -> CGRect {
+        let size = CGSize(width: 200, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 16)]), context: nil)
+    }
+    
 }
 
 extension ChatLogViewController: UITextFieldDelegate {
@@ -186,4 +218,24 @@ extension ChatLogViewController: UITextFieldDelegate {
         sendButtonPressed()
         return true
     }
+}
+
+
+
+
+
+
+
+
+
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+    guard let input = input else { return nil }
+    return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+    return input.rawValue
 }

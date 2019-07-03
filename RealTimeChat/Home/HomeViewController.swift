@@ -74,18 +74,19 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
     {
         super.viewDidLoad()
         setUpNavBar()
+        self.messages.removeAll()
+        self.mainView.tableView.reloadData()
         setUpTableView()
         doSomething()
     }
     
-    var users = [UserClass]()
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         checkIfUserIsLoggedIn()
-        self.messages.removeAll()
-        self.mainView.tableView.reloadData()
     }
+    
+    var users = [UserClass]()
     
     // MARK: Do something
     
@@ -153,11 +154,19 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
         }
     }
     
+    var timer: Timer?
+    
     func displayMessages(viewModel: Home.LoadHomeMessages.ViewModel) {
         DispatchQueue.main.async {
             self.messages = viewModel.messages
-            self.mainView.tableView.reloadData()
+            self.timer?.invalidate()
+            self.timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(self.handleTimer), userInfo: nil, repeats: false)
         }
+    }
+    
+    @objc func handleTimer() {
+        self.mainView.tableView.reloadData()
+        print("Table view reloaded")
     }
     
     func displayUserHasBeenTapped(viewModel: Home.UserTapped.ViewModel) {

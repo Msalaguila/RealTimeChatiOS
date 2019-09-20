@@ -42,6 +42,8 @@ class ChatLogView: UIView {
         return cv
     }()
     
+    var heightConstraint: NSLayoutConstraint?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -70,13 +72,19 @@ class ChatLogView: UIView {
     }
     
     func setUpViews() {
-        addSubviewForAutolayout(bottomContainer)
-        
-        setUpBottomContainer()
+//        addSubviewForAutolayout(bottomContainer)
+//
+//        setUpBottomContainer()
         
         addSubviewForAutolayout(chatLogCollectionView)
         
-        chatLogCollectionView.anchor(top: safeAreaLayoutGuide.topAnchor, leading: leadingAnchor, bottom: bottomContainer.topAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0), size: CGSize(width: 0, height: 0))
+        chatLogCollectionView.anchor(top: safeAreaLayoutGuide.topAnchor, leading: leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: trailingAnchor, padding: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0), size: CGSize(width: 0, height: 0))
+//        chatLogCollectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor)
+//        chatLogCollectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor)
+//        chatLogCollectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor)
+        
+//        heightConstraint = chatLogCollectionView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5)
+//        heightConstraint?.isActive = true
     }
     
 }

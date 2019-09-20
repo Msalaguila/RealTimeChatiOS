@@ -65,6 +65,10 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     func setUpCollectionView() {
         mainView.chatLogCollectionView.delegate = self
         mainView.chatLogCollectionView.dataSource = self
+        mainView.chatLogCollectionView.keyboardDismissMode = .interactive
+        mainView.chatLogCollectionView.alwaysBounceVertical = true
+        mainView.chatLogCollectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 30, right: 0)
+        mainView.chatLogCollectionView.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
         
         mainView.chatLogCollectionView.register(UserChatLogCell.self, forCellWithReuseIdentifier: userCellID)
         mainView.chatLogCollectionView.register(ReceiverChatLogCell.self, forCellWithReuseIdentifier: receiverCellID)
@@ -81,11 +85,36 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     {
         super.viewDidLoad()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardShow),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        
         setUpHandlers()
         setUpCollectionView()
         doSomething()
         getTappedUser()
         loadMessagesForTappedUser()
+    }
+    
+    var i = 0
+    
+    @objc func handleKeyboardShow(notification: Notification) {
+        print("Keyboard will show")
+        print(i)
+        mainView.heightConstraint?.isActive = false
+        if i % 2 == 0 {
+            mainView.heightConstraint = mainView.chatLogCollectionView.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 0.83)
+            scrollToLastItem()
+        } else {
+            mainView.heightConstraint = mainView.chatLogCollectionView.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 0.5)
+            UIView.animate(withDuration: 0, delay: 0, options: UIView.AnimationOptions.curveLinear, animations: {
+                self.view.layoutIfNeeded()
+            }) { (completed) in
+                
+            }
+            scrollToLastItem()
+        }
+        i = i + 1
+        mainView.heightConstraint?.isActive = true
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -120,7 +149,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     
     // TODO: Check that the message is not empty
     @objc func sendButtonPressed() {
-        if let message = mainView.inputTextField.text {
+        if let message = textField.text {
             if !message.isEmpty {
                 let request = ChatLog.SendMessage.Request(message: message)
                 interactor?.sendMessage(request: request)
@@ -136,7 +165,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     // MARK: Events replies
     
     func messageSent(viewModel: ChatLog.SendMessage.ViewModel) {
-        mainView.inputTextField.text = ""
+        textField.text = ""
         //        loadMessagesForTappedUser()
     }
     
@@ -144,14 +173,18 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
         navigationItem.title = viewModel.user.name
     }
     
+    fileprivate func scrollToLastItem() {
+        var row = chatMessages.count - 1
+        var indexPath = IndexPath(row: row, section: 0)
+        mainView.chatLogCollectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
+    }
+    
     func displayMessagesForTappedUser(viewModel: ChatLog.LoadMessagesForTappedUser.ViewModel) {
         chatMessages.removeAll()
         chatMessages = viewModel.messages
         mainView.chatLogCollectionView.reloadData()
         
-        var row = chatMessages.count - 1
-        var indexPath = IndexPath(row: row, section: 0)
-        mainView.chatLogCollectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
+        scrollToLastItem()
     }
     
     
@@ -195,6 +228,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
             return cell
         }
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let message = chatMessages[indexPath.item]
@@ -211,6 +245,53 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
         return NSString(string: text).boundingRect(with: size, options: options, attributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): UIFont.systemFont(ofSize: 16)]), context: nil)
     }
     
+    // MARK: Input Text Field
+    
+    let textField = UITextField()
+    
+    lazy var inputContainerView: UIView = {
+        let containerView = UIView()
+        containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 70)
+        containerView.backgroundColor = .white
+        
+        textField.placeholder = "Enter message..."
+        textField.delegate = self
+        
+        var sendButton = UIButton(type: .system)
+        sendButton.setTitle("Send", for: .normal)
+        sendButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        sendButton.addTarget(self, action: #selector(sendButtonPressed), for: .touchUpInside)
+        
+        var separatorLine = UIView()
+        separatorLine.backgroundColor = .lightGray
+        
+        containerView.addSubviewForAutolayout(separatorLine)
+        
+        separatorLine.anchor(top: containerView.topAnchor, leading: containerView.leadingAnchor, bottom: nil, trailing: containerView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: CGSize(width: 0, height: 0.5))
+        
+        containerView.addSubviewForAutolayout(sendButton)
+        
+        sendButton.anchor(top: containerView.topAnchor, leading: nil, bottom: nil, trailing: containerView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: CGSize(width: 80, height: 50))
+        
+        containerView.addSubviewForAutolayout(textField)
+        
+        textField.anchor(top: containerView.topAnchor, leading: containerView.leadingAnchor, bottom: sendButton.bottomAnchor, trailing: sendButton.leadingAnchor, padding: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0), size: CGSize(width: 0, height: 0))
+        
+        return containerView
+    }()
+    
+    override var inputAccessoryView: UIView? {
+        get {
+            return inputContainerView
+        }
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        get {
+            return true
+        }
+    }
+    
 }
 
 extension ChatLogViewController: UITextFieldDelegate {
@@ -219,14 +300,6 @@ extension ChatLogViewController: UITextFieldDelegate {
         return true
     }
 }
-
-
-
-
-
-
-
-
 
 
 // Helper function inserted by Swift 4.2 migrator.
@@ -239,3 +312,4 @@ fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [Stri
 fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
     return input.rawValue
 }
+

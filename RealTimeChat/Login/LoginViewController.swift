@@ -89,6 +89,9 @@ class LoginViewController: UIViewController, LoginDisplayLogic, UIImagePickerCon
         setUpView()
         setUpImagePicker()
         doSomething()
+        loginView.nameTextField.delegate = self
+        loginView.emailTextField.delegate = self
+        loginView.passwordTextField.delegate = self
     }
     
     // MARK: Do something
@@ -148,6 +151,7 @@ extension LoginViewController {
     @objc func segmentedControlChanged() {
         let index = loginView.segmentedControl.selectedSegmentIndex
         
+        // Login activated
         if index == 0 {
             
             // Change containerHeight
@@ -173,7 +177,10 @@ extension LoginViewController {
             loginView.registerButton.setTitle("Login", for: .normal)
             
             loginView.topImage.image = UIImage(named: "gameofthrones_splash")
+            loginView.topImage.isUserInteractionEnabled = false
         } else {
+            
+            // Register activated
             
             loginView.containerHeight?.constant = 150
             
@@ -193,6 +200,8 @@ extension LoginViewController {
             
             loginView.registerButton.setTitle("Register", for: .normal)
             
+            loginView.topImage.isUserInteractionEnabled = true
+            
             if loginView.selectedImageFromPicker != nil {
                 loginView.topImage.image = loginView.selectedImageFromPicker
             }
@@ -205,6 +214,27 @@ extension LoginViewController {
     @objc func topImageTapped() {
         present(imagePickerController, animated: true, completion: nil)
     }
+    
+    
+}
+
+// MARK: Managing keyboard
+
+extension LoginViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        closekeyboard()
+    }
+    
+    func closekeyboard() {
+        self.view.endEditing(true)
+    }
+    
 }
 
 

@@ -26,7 +26,7 @@ class LoginRouter: NSObject, LoginRoutingLogic, LoginDataPassing
 {
   weak var viewController: LoginViewController?
   var dataStore: LoginDataStore?
-  
+    
   // MARK: Routing
   
   //func routeToSomewhere(segue: UIStoryboardSegue?)

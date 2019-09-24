@@ -135,6 +135,9 @@ extension LoginViewController {
         guard let password = loginView.passwordTextField.text else { return }
         guard let image = loginView.topImage.image else { return }
         
+        loginView.activityIndicatorContainer.isHidden = false
+        loginView.activityIndicator.startAnimating()
+        
         // Login Activated
         if loginView.segmentedControl.selectedSegmentIndex == 0 {
             let request = Login.LoginButtonPressed.Request(email: email, password: password)
@@ -176,7 +179,7 @@ extension LoginViewController {
             
             loginView.registerButton.setTitle("Login", for: .normal)
             
-            loginView.topImage.image = UIImage(named: "gameofthrones_splash")
+            loginView.topImage.image = UIImage(named: "user-logo")
             loginView.topImage.isUserInteractionEnabled = false
         } else {
             
@@ -206,7 +209,7 @@ extension LoginViewController {
                 loginView.topImage.image = loginView.selectedImageFromPicker
             }
             else {
-                loginView.topImage.image = UIImage(named: "gameofthrones_splash")
+                loginView.topImage.image = UIImage(named: "user-logo")
             }
         }
     }
@@ -242,6 +245,10 @@ extension LoginViewController: UITextFieldDelegate {
 extension LoginViewController {
     
     fileprivate func showPasswordTooShortAlert() {
+        
+        loginView.activityIndicatorContainer.isHidden = true
+        loginView.activityIndicator.stopAnimating()
+        
         let alertController = UIAlertController(title: "Password too short", message: "The password needs to have at least 6 characters", preferredStyle: .alert)
         
         let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
@@ -254,6 +261,10 @@ extension LoginViewController {
     }
     
     fileprivate func showErrorAlert() {
+        
+        loginView.activityIndicatorContainer.isHidden = true
+        loginView.activityIndicator.stopAnimating()
+        
         let alertController = UIAlertController(title: "Registration Failed", message: "An error has occured", preferredStyle: .alert)
         
         let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
@@ -266,6 +277,10 @@ extension LoginViewController {
     }
     
     fileprivate func showRegistrationSuccesfulAlert() {
+        
+        loginView.activityIndicatorContainer.isHidden = true
+        loginView.activityIndicator.stopAnimating()
+        
         let alertController = UIAlertController(title: "Registration Successful", message: "You have been registered succesfully", preferredStyle: .alert)
         
         let defaultAction = UIAlertAction(title: "Dismiss", style: .default) { (a) in
@@ -278,6 +293,10 @@ extension LoginViewController {
     }
     
     func showLoginErrorAlert() {
+        
+        loginView.activityIndicatorContainer.isHidden = true
+        loginView.activityIndicator.stopAnimating()
+        
         let alertController = UIAlertController(title: "Check your credentials", message: "Are you sure you have an account? Check your credentials again.", preferredStyle: .alert)
         
         let defaultAction = UIAlertAction(title: "Dismiss", style: .default)

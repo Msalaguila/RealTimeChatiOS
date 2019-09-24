@@ -30,7 +30,7 @@ class NewMessageRouter: NSObject, NewMessageRoutingLogic, NewMessageDataPassing
     // MARK: Routing
     
     func routeToChatController() {
-        let destinationVC = ChatLogViewController()
+        let destinationVC = ChatLogViewController ()
         var destinationDS = destinationVC.router!.dataStore!
         passDataToChatLogController(source: dataStore!, destination: &destinationDS)
         navigateToChatController(source: viewController!, destination: destinationVC)

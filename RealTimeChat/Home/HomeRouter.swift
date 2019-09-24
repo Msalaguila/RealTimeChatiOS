@@ -49,7 +49,6 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing
         navigateToNewMessage(source: viewController!, destination: destinationVC)
     }
     
-    
     //func routeToSomewhere(segue: UIStoryboardSegue?)
     //{
     //  if let segue = segue {

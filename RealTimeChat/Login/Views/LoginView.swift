@@ -17,6 +17,21 @@ class LoginView: UIView {
         }
     }
     
+    var activityIndicatorContainer: UIView = {
+        var view = UIView()
+        view.backgroundColor = UIColor(red: 88/255, green: 97/255, blue: 93/255, alpha: 0.7)
+        view.isHidden = true
+        view.layer.cornerRadius = 10
+        return view
+    }()
+    
+    var activityIndicator: UIActivityIndicatorView = {
+        var indicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.white)
+        indicator.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
     var container: UIView = {
         var container = UIView()
         container.backgroundColor = .white
@@ -58,7 +73,7 @@ class LoginView: UIView {
     
     var topImage: UIImageView = {
         var ig = UIImageView()
-        ig.image = UIImage(named: "gameofthrones_splash")
+        ig.image = UIImage(named: "user-logo")
         ig.contentMode = .scaleAspectFill
         ig.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
         ig.clipsToBounds = true
@@ -173,11 +188,31 @@ class LoginView: UIView {
             ])
     }
     
+    fileprivate func setUpActivityIndicator() {
+        
+        addSubviewForAutolayout(activityIndicatorContainer)
+        
+        NSLayoutConstraint.activate([
+            activityIndicatorContainer.widthAnchor.constraint(equalToConstant: 100),
+            activityIndicatorContainer.heightAnchor.constraint(equalToConstant: 100),
+            activityIndicatorContainer.centerYAnchor.constraint(equalTo: centerYAnchor),
+            activityIndicatorContainer.centerXAnchor.constraint(equalTo: centerXAnchor)
+            ])
+        
+        activityIndicatorContainer.addSubviewForAutolayout(activityIndicator)
+        
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: activityIndicatorContainer.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: activityIndicatorContainer.centerYAnchor)
+            ])
+    }
+    
     func setUpUI() {
         setUpContainer()
         setUpContainerElements()
         setUpRegisterButton()
         setUpSegmentedControl()
         setUpTopImage()
+        setUpActivityIndicator()
     }
 }

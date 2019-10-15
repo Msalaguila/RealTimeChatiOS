@@ -94,7 +94,7 @@ class HomeViewCell: UICollectionViewCell {
         
         contentView.addSubviewForAutolayout(emailLabel)
         
-        emailLabel.anchor(top: nameLabel.bottomAnchor, leading: nameLabel.leadingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0), size: .zero)
+        emailLabel.anchor(top: nameLabel.bottomAnchor, leading: nameLabel.leadingAnchor, bottom: contentView.bottomAnchor, trailing: contentView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 50), size: .zero)
         
         contentView.addSubviewForAutolayout(separatorLine)
         

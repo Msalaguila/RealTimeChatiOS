@@ -12,5 +12,8 @@ target 'RealTimeChat' do
   pod 'Firebase/Database'
   pod 'Firebase/Auth'
   pod 'Firebase/Storage'
+  pod 'GoogleMaps'
+  pod 'GooglePlaces'
+  pod 'Alamofire'
 
 end

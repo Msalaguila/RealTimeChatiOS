@@ -8,15 +8,18 @@
 
 import UIKit
 import Firebase
+import GoogleMaps
 //import IQKeyboardManager
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    var MAPS_API_KEY = "AIzaSyAhapV6lfl4n9P0PqGO2HTW9NxedZfc3K8"
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        GMSServices.provideAPIKey(MAPS_API_KEY)
         
         FirebaseApp.configure()
 //        IQKeyboardManager.shared().isEnabled = true
@@ -26,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let navController = UINavigationController(rootViewController: HomeViewController())
         window?.rootViewController = navController
+        
         
         return true
     }

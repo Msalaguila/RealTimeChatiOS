@@ -175,9 +175,9 @@ class Repository {
         messages = [Message]()
         homeMessages = [HomeMessage]()
         
-        let ref = Database.database().reference().child("user-messages")
+        // let ref = Database.database().reference().child("user-messages")
         let userUID = Auth.auth().currentUser!.uid
-        let userReference = ref.child(userUID)
+        let userReference = self.ref.child(userUID)
         
         // We get the reference to the messages sent to that user
         userReference.observe(.childAdded) { (snapshot) in
@@ -190,12 +190,13 @@ class Repository {
     }
     
     var ref = Database.database().reference().child("user-messages")
+    var refInsideChat = Database.database().reference().child("user-messages")
+    var handleRefInsideChat: UInt = 1
     
     func loadMessagesForUser(userToLoadMessages: UserClass, completion: @escaping ([Message]) -> Void) {
         self.chatMessages.removeAll()
         
         guard let userTappedID = userToLoadMessages.id as? String else { return }
-        
         
         var user = getUserWithID(userUID: userTappedID) { (user) in
             
@@ -203,10 +204,9 @@ class Repository {
             
             guard let userID = Auth.auth().currentUser?.uid as? String else { return }
             
-            
             // 1. We get all the messages from the userLoggedIn
             
-            self.ref.child(userID).observe(.childAdded, with: { (snapshot) in
+            self.handleRefInsideChat = self.refInsideChat.child(userID).observe(.childAdded, with: { (snapshot) in
                 
                 // 2. We retrieve each message
                 let messageID = snapshot.key
@@ -224,7 +224,7 @@ class Repository {
                         let message = Message(fromID: fromID, toID: toID, timestamp: timestamp, message: text, profileImageURL: userProfileImageUrl)
                         
                         if message.chatPartnerId() == userTappedID {
-                            
+                
                             self.chatMessages.append(message)
                             self.chatMessages.sort { (message1, message2) -> Bool in
                                 return message1.timestamp?.int32Value < message2.timestamp?.int32Value

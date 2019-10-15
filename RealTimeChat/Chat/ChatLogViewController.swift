@@ -26,6 +26,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     var interactor: ChatLogBusinessLogic?
     var router: (NSObjectProtocol & ChatLogRoutingLogic & ChatLogDataPassing)?
     var mainView = ChatLogView()
+    var currentTappedUser: User?
     
     var userCellID = "userCellID"
     var receiverCellID = "receiverCellID"
@@ -122,7 +123,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
         
         // Remove the reference
         var currentUser = Auth.auth().currentUser?.uid
-        Repository.getInstance().ref.child(currentUser!).removeAllObservers()
+        Repository.getInstance().refInsideChat.child(currentUser!).removeObserver(withHandle: Repository.getInstance().handleRefInsideChat)
     }
     
     // MARK: Do something

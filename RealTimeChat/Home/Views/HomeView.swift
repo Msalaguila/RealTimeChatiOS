@@ -32,6 +32,7 @@ class HomeView: UIView {
         
         addSubviewForAutolayout(tableView)
         
-        tableView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)        
+        tableView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+    
     }
 }

@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		10DC9FA714BAB19855824DDB /* Pods_RealTimeChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B73466BEC6C1E34E3DA7DD7 /* Pods_RealTimeChat.framework */; };
+		4E04DBB62347370B002859FC /* MapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E04DBB02347370B002859FC /* MapPresenter.swift */; };
+		4E04DBB72347370B002859FC /* MapWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E04DBB12347370B002859FC /* MapWorker.swift */; };
+		4E04DBB82347370B002859FC /* MapRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E04DBB22347370B002859FC /* MapRouter.swift */; };
+		4E04DBB92347370B002859FC /* MapModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E04DBB32347370B002859FC /* MapModels.swift */; };
+		4E04DBBA2347370B002859FC /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E04DBB42347370B002859FC /* MapViewController.swift */; };
+		4E04DBBB2347370B002859FC /* MapInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E04DBB52347370B002859FC /* MapInteractor.swift */; };
+		4E04DBBD23473985002859FC /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E04DBBC23473985002859FC /* MapView.swift */; };
 		4E21A33E22CB8C5C00CC0104 /* UserChatLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E21A33D22CB8C5C00CC0104 /* UserChatLogCell.swift */; };
 		4E28415822C540ED0022195B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E28415722C540ED0022195B /* Message.swift */; };
 		4E61959E22CCBCBA0042584F /* ReceiverChatLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61959D22CCBCBA0042584F /* ReceiverChatLogCell.swift */; };
@@ -68,6 +75,13 @@
 
 /* Begin PBXFileReference section */
 		3B73466BEC6C1E34E3DA7DD7 /* Pods_RealTimeChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RealTimeChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E04DBB02347370B002859FC /* MapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPresenter.swift; sourceTree = "<group>"; };
+		4E04DBB12347370B002859FC /* MapWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapWorker.swift; sourceTree = "<group>"; };
+		4E04DBB22347370B002859FC /* MapRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapRouter.swift; sourceTree = "<group>"; };
+		4E04DBB32347370B002859FC /* MapModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModels.swift; sourceTree = "<group>"; };
+		4E04DBB42347370B002859FC /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		4E04DBB52347370B002859FC /* MapInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapInteractor.swift; sourceTree = "<group>"; };
+		4E04DBBC23473985002859FC /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4E21A33D22CB8C5C00CC0104 /* UserChatLogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChatLogCell.swift; sourceTree = "<group>"; };
 		4E28415722C540ED0022195B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		4E61959D22CCBCBA0042584F /* ReceiverChatLogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverChatLogCell.swift; sourceTree = "<group>"; };
@@ -129,6 +143,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4E04DBAE234736DC002859FC /* Mapa */ = {
+			isa = PBXGroup;
+			children = (
+				4E04DBAF234736E4002859FC /* View */,
+				4E04DBB02347370B002859FC /* MapPresenter.swift */,
+				4E04DBB12347370B002859FC /* MapWorker.swift */,
+				4E04DBB22347370B002859FC /* MapRouter.swift */,
+				4E04DBB32347370B002859FC /* MapModels.swift */,
+				4E04DBB42347370B002859FC /* MapViewController.swift */,
+				4E04DBB52347370B002859FC /* MapInteractor.swift */,
+			);
+			path = Mapa;
+			sourceTree = "<group>";
+		};
+		4E04DBAF234736E4002859FC /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4E04DBBC23473985002859FC /* MapView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		4E8762CE22C3534700F761BF /* Chat */ = {
 			isa = PBXGroup;
 			children = (
@@ -208,6 +244,7 @@
 		4EE2A1FB22B6455C008AE412 /* RealTimeChat */ = {
 			isa = PBXGroup;
 			children = (
+				4E04DBAE234736DC002859FC /* Mapa */,
 				4E8762CE22C3534700F761BF /* Chat */,
 				4E8CB88C22B812770080B149 /* NewMessage */,
 				4E8CB88722B806340080B149 /* Data */,
@@ -308,6 +345,7 @@
 				4EE2A1F722B6455B008AE412 /* Resources */,
 				AB0297A9E0831A366B804A66 /* [CP] Embed Pods Frameworks */,
 				4EE3CBA8233387A900D36E6C /* Embed Frameworks */,
+				9AD80E59B8231C67D661B54C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -366,6 +404,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		9AD80E59B8231C67D661B54C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RealTimeChat/Pods-RealTimeChat-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RealTimeChat/Pods-RealTimeChat-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RealTimeChat/Pods-RealTimeChat-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A8B51A5310061DC69E7DD126 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -421,13 +476,19 @@
 				4EE2A22A22B646B6008AE412 /* HomePresenter.swift in Sources */,
 				4E8762D822C3536300F761BF /* ChatLogModels.swift in Sources */,
 				4EE2A21F22B646A3008AE412 /* LoginWorker.swift in Sources */,
+				4E04DBBD23473985002859FC /* MapView.swift in Sources */,
 				4EE2A1FD22B6455C008AE412 /* AppDelegate.swift in Sources */,
 				4E8CB89822B812910080B149 /* NewMessageViewController.swift in Sources */,
+				4E04DBBA2347370B002859FC /* MapViewController.swift in Sources */,
+				4E04DBB82347370B002859FC /* MapRouter.swift in Sources */,
 				4E8CB89622B812910080B149 /* NewMessageRouter.swift in Sources */,
+				4E04DBB72347370B002859FC /* MapWorker.swift in Sources */,
 				4E8CB89422B812910080B149 /* NewMessagePresenter.swift in Sources */,
 				4EE2A21422B64604008AE412 /* UIViewExtension.swift in Sources */,
 				4E74D38922B83C1F005C6EDF /* NewMessageCell.swift in Sources */,
+				4E04DBBB2347370B002859FC /* MapInteractor.swift in Sources */,
 				4EE2A21722B6462F008AE412 /* LoginView.swift in Sources */,
+				4E04DBB92347370B002859FC /* MapModels.swift in Sources */,
 				4EE2A23222B64715008AE412 /* HomeView.swift in Sources */,
 				4EE2A22122B646A3008AE412 /* LoginModels.swift in Sources */,
 				4E7B81E622C559FF001AF615 /* HomeViewCell.swift in Sources */,
@@ -439,6 +500,7 @@
 				4EE2A22B22B646B6008AE412 /* HomeWorker.swift in Sources */,
 				4E8762D922C3536300F761BF /* ChatLogViewController.swift in Sources */,
 				4E8762DA22C3536300F761BF /* ChatLogInteractor.swift in Sources */,
+				4E04DBB62347370B002859FC /* MapPresenter.swift in Sources */,
 				4E8762DD22C3596300F761BF /* ChatLogView.swift in Sources */,
 				4E8CB89B22B813AF0080B149 /* NewMessageView.swift in Sources */,
 				4E28415822C540ED0022195B /* Message.swift in Sources */,

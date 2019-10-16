@@ -121,7 +121,7 @@ class ChatLogViewController: UIViewController, ChatLogDisplayLogic, UICollection
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        // Remove the reference
+        // Remove the reference from the chat
         var currentUser = Auth.auth().currentUser?.uid
         Repository.getInstance().refInsideChat.child(currentUser!).removeObserver(withHandle: Repository.getInstance().handleRefInsideChat)
     }

@@ -42,6 +42,9 @@ class Repository {
     var homeMessagesSorted = [String: HomeMessage]()
     var chatMessages = [Message]()
     
+    var latestMessagesReference = Database.database().reference().child("latest-messages")
+    let currentUserInAppID = Auth.auth().currentUser?.uid
+    
     private init() {
         
     }
@@ -95,6 +98,11 @@ class Repository {
         }, withCancel: nil)
     }
     
+    private func sendMessageToHome(toID: String, values: [String : Any]) {
+        latestMessagesReference.child(currentUserInAppID!).child(toID).setValue(values)
+        latestMessagesReference.child(toID).child(currentUserInAppID!).setValue(values)
+    }
+    
     func sendMessage(message: String, toUser: UserClass, completion: @escaping () -> Void) {
         let reference = Database.database().reference().child("messages")
         let messageIDReference = reference.childByAutoId()
@@ -102,7 +110,10 @@ class Repository {
         let fromID = Auth.auth().currentUser!.uid
         let toID = toUser.id!
         let timestamp: NSNumber = NSNumber(value: NSDate().timeIntervalSince1970)
-        let values = ["text": message, "fromID": fromID, "toID": toID, "timestamp": timestamp] as [String : Any]
+        let timestampInt = timestamp.int32Value
+        let values = ["text": message, "fromID": fromID, "toID": toID, "timestamp": timestampInt] as [String : Any]
+        
+        sendMessageToHome(toID: toID, values: values)
         
         messageIDReference.updateChildValues(values) { (error, ref) in
             
@@ -229,7 +240,6 @@ class Repository {
                             self.chatMessages.sort { (message1, message2) -> Bool in
                                 return message1.timestamp?.int32Value < message2.timestamp?.int32Value
                             }
-                            
                             completion(self.chatMessages)
                         }
                     }

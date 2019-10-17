@@ -26,8 +26,6 @@ protocol HomeDisplayLogic: class
 
 class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 {
-    
-    
     var interactor: HomeBusinessLogic?
     var router: (NSObjectProtocol & HomeRoutingLogic & HomeDataPassing)?
     var mainView = HomeView()
@@ -78,6 +76,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
         self.mainView.tableView.reloadData()
         setUpTableView()
         doSomething()
+        askForPermissionForNotifications()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -155,10 +154,36 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
     }
     
     var timer: Timer?
+    var lastMessage: HomeMessage? {
+        didSet {
+            
+            guard let name = lastMessage?.profileName as String? else { return }
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Real Time Chat"
+            content.subtitle = "You have a new message from \(name)"
+            content.badge = 1
+            
+            guard let mes = lastMessage?.lastMessage as String? else { return }
+            content.body = "\(mes)"
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            let request = UNNotificationRequest(identifier: "notification", content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(request) { (error) in
+                if (error != nil) {
+                 print("ERROR ADDING NOTIFICATION \(error)")
+                }
+                // UIApplication.shared.applicationIconBadgeNumber = 0
+            }
+            
+        }
+    }
     
     func displayMessages(viewModel: Home.LoadHomeMessages.ViewModel) {
         DispatchQueue.main.async {
             self.messages = viewModel.messages
+            self.lastMessage = viewModel.messages[viewModel.messages.count - 1]
             self.timer?.invalidate()
             self.timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(self.handleTimer), userInfo: nil, repeats: false)
         }
@@ -252,5 +277,13 @@ extension HomeViewController {
             ])
         
         navigationItem.titleView = customView
+    }
+}
+
+extension HomeViewController {
+    
+    func askForPermissionForNotifications() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (didAllow, error) in
+        }
     }
 }

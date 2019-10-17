@@ -19,6 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.sound, .alert, .badge], categories: nil))
+        
+        application.beginBackgroundTask(withName: "notification", expirationHandler: nil)
+        
         GMSServices.provideAPIKey(MAPS_API_KEY)
         
         FirebaseApp.configure()
@@ -36,6 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        application.applicationIconBadgeNumber = 0
     }
     
 }

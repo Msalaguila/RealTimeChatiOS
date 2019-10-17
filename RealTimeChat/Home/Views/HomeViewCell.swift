@@ -23,7 +23,7 @@ class HomeViewCell: UICollectionViewCell {
                 let timestampDate = Date(timeIntervalSince1970: seconds)
                 
                 let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "hh:mm:ss a"
+                dateFormatter.dateFormat = "hh:mm a"
                 dateLabel.text = dateFormatter.string(from: timestampDate)
             }
             
@@ -35,6 +35,7 @@ class HomeViewCell: UICollectionViewCell {
         var dLabel = UILabel()
         dLabel.font = UIFont.systemFont(ofSize: 13)
         dLabel.textColor = UIColor.lightGray
+        dLabel.textAlignment = .center
         return dLabel
     }()
     

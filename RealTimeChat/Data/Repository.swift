@@ -183,6 +183,8 @@ class Repository {
     
     func loadUserMessages(completion: @escaping ([HomeMessage]) -> Void) {
         
+        print("LOADED NEW USER")
+        
         messages = [Message]()
         homeMessages = [HomeMessage]()
         

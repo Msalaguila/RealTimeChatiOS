@@ -25,21 +25,14 @@ class HomeWorker
     // TODO: Mover estos métodos al repositorio
     
     func checkIfUserIsLoggedIn(isLogged completion: @escaping((Bool) -> Void)) {
-        if Auth.auth().currentUser?.uid != nil {
-            // User is logged in
-            completion(true)
-            return
+        repository.checkIfUserIsLoggedIn { (error) in
+            completion(error)
         }
-        completion(false)
     }
     
     func logoutUser(completion: @escaping(() -> Void)) {
-        do {
-            try Auth.auth().signOut()
+        repository.logoutUser {
             completion()
-            return
-        } catch let error {
-            print(error)
         }
     }
     

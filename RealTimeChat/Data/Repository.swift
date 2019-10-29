@@ -45,6 +45,10 @@ class Repository {
     var latestMessagesReference = Database.database().reference().child("latest-messages")
     let currentUserInAppID = Auth.auth().currentUser?.uid
     
+    var ref = Database.database().reference().child("user-messages")
+    var refInsideChat = Database.database().reference().child("user-messages")
+    var handleRefInsideChat: UInt = 1
+    
     private init() {
         
     }
@@ -202,10 +206,6 @@ class Repository {
         }
     }
     
-    var ref = Database.database().reference().child("user-messages")
-    var refInsideChat = Database.database().reference().child("user-messages")
-    var handleRefInsideChat: UInt = 1
-    
     func loadMessagesForUser(userToLoadMessages: UserClass, completion: @escaping ([Message]) -> Void) {
         self.chatMessages.removeAll()
         
@@ -258,6 +258,26 @@ class Repository {
                 let user = UserClass(id: nil, name: nil, email: nil, imageUrl: profileImageUrl)
                 completion(user)
             }
+        }
+    }
+    
+    func loginUser(request: Login.LoginButtonPressed.Request, error completion: @escaping(_ err: Bool, _ shortPassword: Bool) -> Void) {
+        
+        // Check if password is short
+        if request.password.count < 6 {
+            completion(true, true)
+            return
+        }
+        
+        Auth.auth().signIn(withEmail: request.email, password: request.password) { (user, error) in
+            
+            if error != nil {
+                completion(true, false)
+                return
+            }
+            
+            // User Signed In Succesfully
+            completion(false, false)
         }
     }
 }

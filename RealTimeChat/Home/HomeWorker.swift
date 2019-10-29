@@ -22,6 +22,8 @@ class HomeWorker
     {
     }
     
+    // TODO: Mover estos métodos al repositorio
+    
     func checkIfUserIsLoggedIn(isLogged completion: @escaping((Bool) -> Void)) {
         if Auth.auth().currentUser?.uid != nil {
             // User is logged in

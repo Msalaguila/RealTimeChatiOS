@@ -18,9 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var MAPS_API_KEY = "AIzaSyAhapV6lfl4n9P0PqGO2HTW9NxedZfc3K8"
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.sound, .alert, .badge], categories: nil))
-        
+                
         application.beginBackgroundTask(withName: "notification", expirationHandler: nil)
         
         GMSServices.provideAPIKey(MAPS_API_KEY)

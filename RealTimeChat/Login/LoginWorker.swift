@@ -15,27 +15,20 @@ import Firebase
 
 class LoginWorker
 {
+    
+    var repository = Repository.getInstance()
+    
     func doSomeWork()
     {
+        
     }
+    
+    // TODO: Mover estos métodos al repositorio
     
     func loginUser(request: Login.LoginButtonPressed.Request, error completion: @escaping(_ err: Bool, _ shortPassword: Bool) -> Void) {
         
-        // Check if password is short
-        if request.password.count < 6 {
-            completion(true, true)
-            return
-        }
-        
-        Auth.auth().signIn(withEmail: request.email, password: request.password) { (user, error) in
-            
-            if error != nil {
-                completion(true, false)
-                return
-            }
-            
-            // User Signed In Succesfully
-            completion(false, false)
+        repository.loginUser(request: request) { (error, shortPassword) in
+            completion(error, shortPassword)
         }
     }
     

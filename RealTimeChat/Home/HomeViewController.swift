@@ -156,25 +156,37 @@ class HomeViewController: UIViewController, HomeDisplayLogic, UICollectionViewDe
     var timer: Timer?
     var lastMessage: HomeMessage? {
         didSet {
-            
             guard let name = lastMessage?.profileName as String? else { return }
-            
-            let content = UNMutableNotificationContent()
-            content.title = "Real Time Chat"
-            content.subtitle = "You have a new message from \(name)"
-            content.badge = 1
-            
             guard let mes = lastMessage?.lastMessage as String? else { return }
-            content.body = "\(mes)"
-            
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-            let request = UNNotificationRequest(identifier: "notification", content: content, trigger: trigger)
-            
-            UNUserNotificationCenter.current().add(request) { (error) in
-                if (error != nil) {
-                 print("ERROR ADDING NOTIFICATION \(error)")
-                }
-                // UIApplication.shared.applicationIconBadgeNumber = 0
+            displayNotification(name: name, mes: mes)
+        }
+    }
+    
+    var nt = 1
+    
+    func displayNotification(name: String, mes: String) {
+        
+        nt = nt + 1
+        print("NT \(nt)")
+        
+        let content = UNMutableNotificationContent()
+        content.title = "Real Time Chat"
+        content.subtitle = "You have a new message from \(name)"
+        content.badge = 1
+        content.sound = UNNotificationSound.default
+        content.body = "\(mes)"
+        content.threadIdentifier = "\(name)"
+        content.summaryArgument = "1"
+        
+        let center = UNUserNotificationCenter.current()
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
+        let request = UNNotificationRequest(identifier: "\(nt)", content: content, trigger: trigger)
+        
+        center.removeAllPendingNotificationRequests()
+        center.add(request) { (error) in
+            if (error != nil) {
+                print("ERROR ADDING NOTIFICATION \(error)")
             }
             
         }
